@@ -1,0 +1,101 @@
+import React, { useState, useRef } from "react";
+
+const MultiDirectionalController = () => {
+  const [position, setPosition] = useState({ x: 200, y: 200 });
+  const [isDragging, setIsDragging] = useState(false);
+  const [offset, setOffset] = useState({ x: 0, y: 0 });
+  const imageRef = useRef(null);
+
+  const handleMouseDown = (e) => {
+    setIsDragging(true);
+    const rect = imageRef.current.getBoundingClientRect();
+    setOffset({
+      x: e.clientX - rect.left,
+      y: e.clientY - rect.top,
+    });
+  };
+
+  const handleMouseMove = (e) => {
+    if (isDragging) {
+      setPosition({
+        x: e.clientX - offset.x,
+        y: e.clientY - offset.y,
+      });
+    }
+  };
+
+  const handleMouseUp = () => {
+    setIsDragging(false);
+  };
+
+  const moveImage = (direction) => {
+    const step = 10;
+    setPosition((prev) => {
+      switch (direction) {
+        case "up":
+          return { ...prev, y: prev.y - step };
+        case "down":
+          return { ...prev, y: prev.y + step };
+        case "left":
+          return { ...prev, x: prev.x - step };
+        case "right":
+          return { ...prev, x: prev.x + step };
+        default:
+          return prev;
+      }
+    });
+  };
+
+  return (
+    <div
+      className="relative w-screen h-screen overflow-hidden bg-gray-100"
+      onMouseMove={handleMouseMove}
+      onMouseUp={handleMouseUp}
+    >
+      {/* Draggable Image */}
+      <img
+        ref={imageRef}
+        src="https://via.placeholder.com/150"
+        alt="Draggable"
+        className="absolute cursor-move"
+        style={{
+          top: `${position.y}px`,
+          left: `${position.x}px`,
+          width: "150px",
+          height: "150px",
+        }}
+        onMouseDown={handleMouseDown}
+      />
+
+      {/* Control Panel */}
+      <div className="fixed bottom-10 left-10 p-4 bg-white shadow-lg rounded-xl">
+        <div className="grid grid-cols-3 gap-2">
+          <button
+            onClick={() => moveImage("up")}
+            className="col-start-2 bg-blue-500 text-white p-2 rounded"
+          >
+            ↑
+          </button>
+          <button
+            onClick={() => moveImage("left")}
+            className="bg-blue-500 text-white p-2 rounded"
+          >
+            ←
+          </button>
+          <button
+            onClick={() => moveImage("down")}
+            className="col-start-2 bg-blue-500 text-white p-2 rounded"
+          >
+            ↓
+          </button>
+          <button
+            onClick={() => moveImage("right")}
+            className="bg-blue-500 text-white p-2 rounded"
+          >
+            →
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
