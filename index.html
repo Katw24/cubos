@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>3D Cube with 45-degree Rotation</title>
+  <title>3D Cube Click to Change Sides</title>
   <style>
     body {
       display: flex;
@@ -20,28 +20,29 @@
       transform-style: preserve-3d;
       transform: rotateX(0deg) rotateY(0deg);
       transition: transform 1s;
-      cursor: grab;
-      position: relative;
+      cursor: pointer;
     }
 
     .cube div {
       position: absolute;
       width: 200px;
       height: 200px;
-      background-color: #3498db;
-      border: 2px solid black; /* Set border color to black */
+      background-size: cover; /* Ensures the image fits the face */
+      background-position: center;
+      border: 2px solid black;
     }
 
-    .front  { transform: translateZ(100px); background-color: red; }
-    .back   { transform: rotateY(180deg) translateZ(100px); background-color: blue; }
-    .left   { transform: rotateY(-90deg) translateZ(100px); background-color: green; }
-    .right  { transform: rotateY(90deg) translateZ(100px); background-color: yellow; }
-    .top    { transform: rotateX(90deg) translateZ(100px); background-color: purple; }
-    .bottom { transform: rotateX(-90deg) translateZ(100px); background-color: orange; }
+    /* Set the images for each side */
+    .front  { transform: translateZ(100px); background-image: url('front-image.jpg'); }
+    .back   { transform: rotateY(180deg) translateZ(100px); background-image: url('back-image.jpg'); }
+    .left   { transform: rotateY(-90deg) translateZ(100px); background-image: url('left-image.jpg'); }
+    .right  { transform: rotateY(90deg) translateZ(100px); background-image: url('right-image.jpg'); }
+    .top    { transform: rotateX(90deg) translateZ(100px); background-image: url('top-image.jpg'); }
+    .bottom { transform: rotateX(-90deg) translateZ(100px); background-image: url('bottom-image.jpg'); }
   </style>
 </head>
 <body>
-  <div class="cube" id="cube">
+  <div class="cube" onclick="changeSide()">
     <div class="front"></div>
     <div class="back"></div>
     <div class="left"></div>
@@ -51,38 +52,22 @@
   </div>
 
   <script>
-    let currentX = 0;
-    let isDragging = false;
-    let startY = 0;
-    const cube = document.getElementById('cube');
+    let currentSide = 0;
+    const cube = document.querySelector('.cube');
+    const sides = [
+      { rotateX: 0, rotateY: 0 },
+      { rotateX: 90, rotateY: 0 },
+      { rotateX: 180, rotateY: 0 },
+      { rotateX: 270, rotateY: 0 },
+      { rotateX: 0, rotateY: 90 },
+      { rotateX: 0, rotateY: -90 }
+    ];
 
-    // Start dragging event
-    cube.addEventListener('mousedown', (e) => {
-      isDragging = true;
-      startY = e.clientY;  // Store the initial position of the mouse
-      cube.style.cursor = 'grabbing';  // Change cursor to grabbing when dragging
-    });
-
-    // Handle dragging event
-    document.addEventListener('mousemove', (e) => {
-      if (!isDragging) return;
-
-      const deltaY = e.clientY - startY;  // Calculate how much the mouse moved vertically
-
-      // Snap the rotation to 45 degrees increments along the X-axis
-      const snapRotation = Math.round(deltaY / 45) * 45;  // Round to nearest 45 degrees
-
-      cube.style.transform = `rotateX(${snapRotation}deg) rotateY(0deg)`; // Apply the rotation
-
-      // Store the new position of the mouse
-      startY = e.clientY;
-    });
-
-    // Stop dragging event
-    document.addEventListener('mouseup', () => {
-      isDragging = false;
-      cube.style.cursor = 'grab';  // Change cursor back to grab when dragging ends
-    });
+    function changeSide() {
+      currentSide = (currentSide + 1) % sides.length;
+      const side = sides[currentSide];
+      cube.style.transform = `rotateX(${side.rotateX}deg) rotateY(${side.rotateY}deg)`;
+    }
   </script>
 </body>
 </html>
