@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>3D Cube Rotatable in 45 Degrees</title>
+  <title>3D Cube Click to Rotate</title>
   <style>
     body {
       display: flex;
@@ -54,8 +54,9 @@
     let currentY = 0;
     const cube = document.querySelector('.cube');
 
+    // Rotate the cube by 45 degrees on each click
     function rotateCube() {
-      // Increase the rotation by 45 degrees
+      // Increase the rotation by 45 degrees on both axes
       currentX += 45;
       currentY += 45;
 
