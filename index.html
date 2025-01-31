@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>3D Cube with 2D Drag Rotation</title>
+  <title>3D Cube with 2D 45-Degree Drag Rotation</title>
   <style>
     body {
       display: flex;
@@ -58,6 +58,7 @@
     let isDragging = false;
     let dragStartX = 0;
     let dragStartY = 0;
+    let currentRotation = 0;
 
     // Rotate the 3D cube to another side on click
     function changeSide() {
@@ -74,18 +75,20 @@
       frontFace.style.cursor = 'grabbing';
     });
 
-    // Drag the front face to rotate it
+    // Drag the front face to rotate it in 45-degree increments
     document.addEventListener('mousemove', (e) => {
       if (!isDragging) return;
 
       const dx = e.clientX - dragStartX;
-      const dy = e.clientY - dragStartY;
 
-      // Rotate the front face based on the drag distance
-      frontFace.style.transform = `translateZ(100px) rotate(${dx / 2}deg)`; // Rotate 2D front face
-
-      dragStartX = e.clientX;
-      dragStartY = e.clientY;
+      // Check if the drag distance exceeds 45 degrees and rotate in increments of 45
+      if (Math.abs(dx) >= 45) {
+        const rotateAmount = Math.floor(dx / 45) * 45; // Round the distance to the nearest 45 degrees
+        if (rotateAmount !== currentRotation) {
+          currentRotation = rotateAmount;
+          frontFace.style.transform = `translateZ(100px) rotate(${currentRotation}deg)`;
+        }
+      }
     });
 
     // End the drag
