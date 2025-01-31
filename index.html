@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>3D Draggable Cube</title>
+  <title>Draggable Cube</title>
   <style>
     body {
       display: flex;
@@ -12,15 +12,16 @@
       height: 100vh;
       margin: 0;
       background-color: #f0f0f0;
+      overflow: hidden;
     }
 
     .cube {
       width: 200px;
       height: 200px;
       transform-style: preserve-3d;
-      transform: rotateX(0deg) rotateY(0deg);
       transition: transform 0.1s ease-out;
       cursor: grab;
+      position: absolute;
     }
 
     .cube div {
@@ -53,13 +54,14 @@
   <script>
     const cube = document.getElementById('cube');
     let isDragging = false;
-    let startX, startY, currentX = 0, currentY = 0;
+    let offsetX, offsetY, mouseX, mouseY;
 
     // Event listener to initiate drag
     cube.addEventListener('mousedown', (e) => {
       isDragging = true;
-      startX = e.clientX;
-      startY = e.clientY;
+      // Calculate the initial offset of the mouse relative to the cube's position
+      offsetX = e.clientX - cube.getBoundingClientRect().left;
+      offsetY = e.clientY - cube.getBoundingClientRect().top;
       cube.style.cursor = 'grabbing'; // Change cursor style to grabbing
     });
 
@@ -67,17 +69,13 @@
     document.addEventListener('mousemove', (e) => {
       if (!isDragging) return;
 
-      const dx = e.clientX - startX;
-      const dy = e.clientY - startY;
+      // Calculate new position of the cube based on mouse movement
+      mouseX = e.clientX - offsetX;
+      mouseY = e.clientY - offsetY;
 
-      // Update cube rotation based on mouse movement
-      currentX += dy * 0.5;  // Rotate along X axis
-      currentY += dx * 0.5;  // Rotate along Y axis
-
-      cube.style.transform = `rotateX(${currentX}deg) rotateY(${currentY}deg)`;
-
-      startX = e.clientX;
-      startY = e.clientY;
+      // Move the cube to the new position
+      cube.style.left = `${mouseX}px`;
+      cube.style.top = `${mouseY}px`;
     });
 
     // Event listener to stop drag
