@@ -12,7 +12,6 @@
       height: 100vh;
       margin: 0;
       background-color: #f0f0f0;
-      overflow: hidden;
     }
 
     .cube {
@@ -22,7 +21,7 @@
       transform: rotateX(0deg) rotateY(0deg);
       transition: transform 1s;
       cursor: pointer;
-      position: absolute; /* Make it moveable */
+      position: relative;
     }
 
     .cube div {
@@ -44,7 +43,7 @@
   </style>
 </head>
 <body>
-  <div class="cube" id="cube" onclick="changeSide()">
+  <div class="cube" onclick="changeSide()">
     <div class="front"></div>
     <div class="back"></div>
     <div class="left"></div>
@@ -55,7 +54,11 @@
 
   <script>
     let currentSide = 0;
-    const cube = document.getElementById('cube');
+    let isMouseDown = false;
+    let startX, startY;
+    let rotateX = 0, rotateY = 0;
+
+    const cube = document.querySelector('.cube');
     const sides = [
       { rotateX: 0, rotateY: 0 },
       { rotateX: 90, rotateY: 0 },
@@ -65,7 +68,38 @@
       { rotateX: 0, rotateY: -90 }
     ];
 
-    // Function to change the side when clicked
     function changeSide() {
       currentSide = (currentSide + 1) % sides.length;
-      c
+      const side = sides[currentSide];
+      cube.style.transform = `rotateX(${side.rotateX}deg) rotateY(${side.rotateY}deg)`;
+    }
+
+    cube.addEventListener('mousedown', (e) => {
+      isMouseDown = true;
+      startX = e.clientX;
+      startY = e.clientY;
+      cube.style.transition = 'none'; // Disable smooth transitions when dragging
+    });
+
+    document.addEventListener('mousemove', (e) => {
+      if (!isMouseDown) return;
+
+      const deltaX = e.clientX - startX;
+      const deltaY = e.clientY - startY;
+
+      rotateX += deltaY * 0.2;  // Adjust sensitivity for X axis
+      rotateY += deltaX * 0.2;  // Adjust sensitivity for Y axis
+
+      cube.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+      
+      startX = e.clientX;
+      startY = e.clientY;
+    });
+
+    document.addEventListener('mouseup', () => {
+      isMouseDown = false;
+      cube.style.transition = 'transform 1s'; // Re-enable smooth transition
+    });
+  </script>
+</body>
+</html>
