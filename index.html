@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>3D Cube Click to Change Sides</title>
+  <title>3D Cube Rotatable in 45 Degrees</title>
   <style>
     body {
       display: flex;
@@ -40,7 +40,7 @@
   </style>
 </head>
 <body>
-  <div class="cube" onclick="changeSide()">
+  <div class="cube" onclick="rotateCube()">
     <div class="front"></div>
     <div class="back"></div>
     <div class="left"></div>
@@ -50,21 +50,17 @@
   </div>
 
   <script>
-    let currentSide = 0;
+    let currentX = 0;
+    let currentY = 0;
     const cube = document.querySelector('.cube');
-    const sides = [
-      { rotateX: 0, rotateY: 0 },
-      { rotateX: 90, rotateY: 0 },
-      { rotateX: 180, rotateY: 0 },
-      { rotateX: 270, rotateY: 0 },
-      { rotateX: 0, rotateY: 90 },
-      { rotateX: 0, rotateY: -90 }
-    ];
 
-    function changeSide() {
-      currentSide = (currentSide + 1) % sides.length;
-      const side = sides[currentSide];
-      cube.style.transform = `rotateX(${side.rotateX}deg) rotateY(${side.rotateY}deg)`;
+    function rotateCube() {
+      // Increase the rotation by 45 degrees
+      currentX += 45;
+      currentY += 45;
+
+      // Apply the rotation to the cube
+      cube.style.transform = `rotateX(${currentX}deg) rotateY(${currentY}deg)`;
     }
   </script>
 </body>
