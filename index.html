@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>3D Cube with 2D 45-Degree Drag Rotation</title>
+  <title>3D Cube with 2D 45-Degree Drag Rotation and Moveable Cube</title>
   <style>
     body {
       display: flex;
@@ -12,53 +12,67 @@
       height: 100vh;
       margin: 0;
       background-color: #f0f0f0;
+      overflow: hidden; /* Prevents scrollbars from appearing when moving the cube */
+    }
+
+    .cube-container {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
     }
 
     .cube {
-      width: 200px;
-      height: 200px;
+      width: 150px; /* Reduced size for a more compact cube */
+      height: 150px; /* Reduced size for a more compact cube */
       transform-style: preserve-3d;
       transform: rotateX(0deg) rotateY(0deg);
       transition: transform 1s;
-      cursor: pointer;
+      cursor: grab;
       position: relative;
+      perspective: 1000px; /* Adjusted perspective for a more compact look */
+      margin: 0 auto;
     }
 
     .cube div {
       position: absolute;
-      width: 200px;
-      height: 200px;
+      width: 150px; /* Reduced width of each face */
+      height: 150px; /* Reduced height of each face */
       background-color: #3498db;
       border: 2px solid black;
     }
 
-    .front  { transform: translateZ(100px); background-color: red; }
-    .back   { transform: rotateY(180deg) translateZ(100px); background-color: blue; }
-    .left   { transform: rotateY(-90deg) translateZ(100px); background-color: green; }
-    .right  { transform: rotateY(90deg) translateZ(100px); background-color: yellow; }
-    .top    { transform: rotateX(90deg) translateZ(100px); background-color: purple; }
-    .bottom { transform: rotateX(-90deg) translateZ(100px); background-color: orange; }
+    .front  { transform: translateZ(75px); background-color: red; }
+    .back   { transform: rotateY(180deg) translateZ(75px); background-color: blue; }
+    .left   { transform: rotateY(-90deg) translateZ(75px); background-color: green; }
+    .right  { transform: rotateY(90deg) translateZ(75px); background-color: yellow; }
+    .top    { transform: rotateX(90deg) translateZ(75px); background-color: purple; }
+    .bottom { transform: rotateX(-90deg) translateZ(75px); background-color: orange; }
   </style>
 </head>
 <body>
-  <div class="cube" onclick="changeSide()">
-    <div class="front" id="front"></div>
-    <div class="back"></div>
-    <div class="left"></div>
-    <div class="right"></div>
-    <div class="top"></div>
-    <div class="bottom"></div>
+  <div class="cube-container" id="cube-container">
+    <div class="cube" id="cube" onclick="changeSide()">
+      <div class="front" id="front"></div>
+      <div class="back"></div>
+      <div class="left"></div>
+      <div class="right"></div>
+      <div class="top"></div>
+      <div class="bottom"></div>
+    </div>
   </div>
 
   <script>
     let currentX = 0;
     let currentY = 0;
-    const cube = document.querySelector('.cube');
+    let isDraggingCube = false;
+    let isDraggingFace = false;
+    let cubeStartX = 0, cubeStartY = 0;
+    let faceStartX = 0, faceStartY = 0;
+    let cubePosition = { x: 0, y: 0 }; // Track the cube's position on the page
+    const cube = document.getElementById('cube');
     const frontFace = document.getElementById('front');
-    let isDragging = false;
-    let dragStartX = 0;
-    let dragStartY = 0;
-    let currentRotation = 0;
 
     // Rotate the 3D cube to another side on click
     function changeSide() {
@@ -67,35 +81,54 @@
       cube.style.transform = `rotateX(${currentX}deg) rotateY(${currentY}deg)`;
     }
 
-    // Start the drag event to rotate the 2D part (front face)
-    frontFace.addEventListener('mousedown', (e) => {
-      isDragging = true;
-      dragStartX = e.clientX;
-      dragStartY = e.clientY;
-      frontFace.style.cursor = 'grabbing';
+    // Start dragging the cube to move it around
+    cube.addEventListener('mousedown', (e) => {
+      isDraggingCube = true;
+      cubeStartX = e.clientX - cubePosition.x;
+      cubeStartY = e.clientY - cubePosition.y;
+      cube.style.cursor = 'grabbing';
     });
 
-    // Drag the front face to rotate it in 45-degree increments
+    // Move the entire cube while dragging
     document.addEventListener('mousemove', (e) => {
-      if (!isDragging) return;
+      if (isDraggingCube) {
+        const dx = e.clientX - cubeStartX;
+        const dy = e.clientY - cubeStartY;
+        cubePosition = { x: dx, y: dy };
+        cube.style.transform = `rotateX(${currentX}deg) rotateY(${currentY}deg) translate(${dx}px, ${dy}px)`;
+      }
 
-      const dx = e.clientX - dragStartX;
-
-      // Check if the drag distance exceeds 45 degrees and rotate in increments of 45
-      if (Math.abs(dx) >= 45) {
-        const rotateAmount = Math.floor(dx / 45) * 45; // Round the distance to the nearest 45 degrees
-        if (rotateAmount !== currentRotation) {
-          currentRotation = rotateAmount;
-          frontFace.style.transform = `translateZ(100px) rotate(${currentRotation}deg)`;
+      if (isDraggingFace) {
+        const dx = e.clientX - faceStartX;
+        const dy = e.clientY - faceStartY;
+        // Rotate the front face in 45-degree increments based on drag
+        if (Math.abs(dx) >= 45) {
+          const rotateAmount = Math.floor(dx / 45) * 45; // Snap rotation to 45 degrees
+          frontFace.style.transform = `translateZ(75px) rotate(${rotateAmount}deg)`;
         }
       }
     });
 
-    // End the drag
+    // Stop dragging the cube
     document.addEventListener('mouseup', () => {
-      isDragging = false;
+      isDraggingCube = false;
+      cube.style.cursor = 'grab';
+    });
+
+    // Start dragging the front face
+    frontFace.addEventListener('mousedown', (e) => {
+      isDraggingFace = true;
+      faceStartX = e.clientX;
+      faceStartY = e.clientY;
+      frontFace.style.cursor = 'grabbing';
+    });
+
+    // Stop dragging the front face
+    document.addEventListener('mouseup', () => {
+      isDraggingFace = false;
       frontFace.style.cursor = 'grab';
     });
+
   </script>
 </body>
 </html>
