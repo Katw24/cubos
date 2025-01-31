@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>3D Cube Click to Rotate</title>
+  <title>3D Cube with 2D Drag Rotation</title>
   <style>
     body {
       display: flex;
@@ -21,6 +21,7 @@
       transform: rotateX(0deg) rotateY(0deg);
       transition: transform 1s;
       cursor: pointer;
+      position: relative;
     }
 
     .cube div {
@@ -28,7 +29,7 @@
       width: 200px;
       height: 200px;
       background-color: #3498db;
-      border: 2px solid black; /* Set border color to black */
+      border: 2px solid black;
     }
 
     .front  { transform: translateZ(100px); background-color: red; }
@@ -40,8 +41,8 @@
   </style>
 </head>
 <body>
-  <div class="cube" onclick="rotateCube()">
-    <div class="front"></div>
+  <div class="cube" onclick="changeSide()">
+    <div class="front" id="front"></div>
     <div class="back"></div>
     <div class="left"></div>
     <div class="right"></div>
@@ -53,16 +54,45 @@
     let currentX = 0;
     let currentY = 0;
     const cube = document.querySelector('.cube');
+    const frontFace = document.getElementById('front');
+    let isDragging = false;
+    let dragStartX = 0;
+    let dragStartY = 0;
 
-    // Rotate the cube by 45 degrees on each click
-    function rotateCube() {
-      // Increase the rotation by 45 degrees on both axes
-      currentX += 45;
-      currentY += 45;
-
-      // Apply the rotation to the cube
+    // Rotate the 3D cube to another side on click
+    function changeSide() {
+      currentX += 90;
+      currentY += 90;
       cube.style.transform = `rotateX(${currentX}deg) rotateY(${currentY}deg)`;
     }
+
+    // Start the drag event to rotate the 2D part (front face)
+    frontFace.addEventListener('mousedown', (e) => {
+      isDragging = true;
+      dragStartX = e.clientX;
+      dragStartY = e.clientY;
+      frontFace.style.cursor = 'grabbing';
+    });
+
+    // Drag the front face to rotate it
+    document.addEventListener('mousemove', (e) => {
+      if (!isDragging) return;
+
+      const dx = e.clientX - dragStartX;
+      const dy = e.clientY - dragStartY;
+
+      // Rotate the front face based on the drag distance
+      frontFace.style.transform = `translateZ(100px) rotate(${dx / 2}deg)`; // Rotate 2D front face
+
+      dragStartX = e.clientX;
+      dragStartY = e.clientY;
+    });
+
+    // End the drag
+    document.addEventListener('mouseup', () => {
+      isDragging = false;
+      frontFace.style.cursor = 'grab';
+    });
   </script>
 </body>
 </html>
