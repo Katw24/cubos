@@ -12,6 +12,7 @@
       height: 100vh;
       margin: 0;
       background-color: #f0f0f0;
+      overflow: hidden;
     }
 
     .cube {
@@ -20,14 +21,15 @@
       transform-style: preserve-3d;
       transform: rotateX(0deg) rotateY(0deg);
       transition: transform 1s;
-      cursor: grab;
+      cursor: pointer;
+      position: absolute; /* Make it moveable */
     }
 
     .cube div {
       position: absolute;
       width: 200px;
       height: 200px;
-      background-size: cover; /* Ensures the image fits the face */
+      background-size: cover;
       background-position: center;
       border: 2px solid black;
     }
@@ -42,7 +44,7 @@
   </style>
 </head>
 <body>
-  <div class="cube" id="cube">
+  <div class="cube" id="cube" onclick="changeSide()">
     <div class="front"></div>
     <div class="back"></div>
     <div class="left"></div>
@@ -52,45 +54,18 @@
   </div>
 
   <script>
+    let currentSide = 0;
     const cube = document.getElementById('cube');
-    let isDragging = false;
-    let prevX = 0;
-    let prevY = 0;
-    let currentX = 0;
-    let currentY = 0;
+    const sides = [
+      { rotateX: 0, rotateY: 0 },
+      { rotateX: 90, rotateY: 0 },
+      { rotateX: 180, rotateY: 0 },
+      { rotateX: 270, rotateY: 0 },
+      { rotateX: 0, rotateY: 90 },
+      { rotateX: 0, rotateY: -90 }
+    ];
 
-    cube.addEventListener('mousedown', (e) => {
-      isDragging = true;
-      prevX = e.clientX;
-      prevY = e.clientY;
-      cube.style.cursor = 'grabbing';
-    });
-
-    window.addEventListener('mousemove', (e) => {
-      if (!isDragging) return;
-
-      currentX = e.clientX;
-      currentY = e.clientY;
-
-      const deltaX = currentX - prevX;
-      const deltaY = currentY - prevY;
-
-      const rotationX = parseFloat(cube.style.transform.split('rotateX(')[1]?.split('deg')[0] || 0) - deltaY / 2;
-      const rotationY = parseFloat(cube.style.transform.split('rotateY(')[1]?.split('deg')[0] || 0) + deltaX / 2;
-
-      cube.style.transform = `rotateX(${rotationX}deg) rotateY(${rotationY}deg)`;
-
-      prevX = currentX;
-      prevY = currentY;
-    });
-
-    window.addEventListener('mouseup', () => {
-      isDragging = false;
-      cube.style.cursor = 'grab';
-    });
-
-    // Prevent text selection while dragging
-    window.addEventListener('dragstart', (e) => e.preventDefault());
-  </script>
-</body>
-</html>
+    // Function to change the side when clicked
+    function changeSide() {
+      currentSide = (currentSide + 1) % sides.length;
+      c
