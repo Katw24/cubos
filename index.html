@@ -12,6 +12,7 @@
       height: 100vh;
       margin: 0;
       background-color: #f0f0f0;
+      overflow: hidden;
     }
 
     .cube {
@@ -21,7 +22,7 @@
       transform: rotateX(0deg) rotateY(0deg);
       transition: transform 1s;
       cursor: pointer;
-      position: relative;
+      position: absolute;
     }
 
     .cube div {
@@ -56,9 +57,9 @@
     let currentSide = 0;
     let isMouseDown = false;
     let startX, startY;
-    let rotateX = 0, rotateY = 0;
-
+    let cubeOffsetX = 0, cubeOffsetY = 0;
     const cube = document.querySelector('.cube');
+    
     const sides = [
       { rotateX: 0, rotateY: 0 },
       { rotateX: 90, rotateY: 0 },
@@ -78,27 +79,30 @@
       isMouseDown = true;
       startX = e.clientX;
       startY = e.clientY;
-      cube.style.transition = 'none'; // Disable smooth transitions when dragging
+      cube.style.transition = 'none'; // Disable smooth transitions during dragging
     });
 
     document.addEventListener('mousemove', (e) => {
       if (!isMouseDown) return;
 
+      // Calculate movement
       const deltaX = e.clientX - startX;
       const deltaY = e.clientY - startY;
 
-      rotateX += deltaY * 0.2;  // Adjust sensitivity for X axis
-      rotateY += deltaX * 0.2;  // Adjust sensitivity for Y axis
+      cubeOffsetX += deltaX;
+      cubeOffsetY += deltaY;
 
-      cube.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
-      
+      // Apply new position to the cube
+      cube.style.left = `${cubeOffsetX}px`;
+      cube.style.top = `${cubeOffsetY}px`;
+
       startX = e.clientX;
       startY = e.clientY;
     });
 
     document.addEventListener('mouseup', () => {
       isMouseDown = false;
-      cube.style.transition = 'transform 1s'; // Re-enable smooth transition
+      cube.style.transition = 'transform 1s'; // Re-enable smooth transitions
     });
   </script>
 </body>
