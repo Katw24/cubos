@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>3D Draggable Cube</title>
+  <title>3D Cube Click to Change Sides</title>
   <style>
     body {
       display: flex;
@@ -19,19 +19,20 @@
       height: 200px;
       transform-style: preserve-3d;
       transform: rotateX(0deg) rotateY(0deg);
-      transition: transform 0.1s ease-out;
-      cursor: grab;
+      transition: transform 1s;
+      cursor: pointer;
     }
 
     .cube div {
       position: absolute;
       width: 200px;
       height: 200px;
-      background-size: cover;
+      background-size: cover; /* Ensures the image fits the face */
       background-position: center;
       border: 2px solid black;
     }
 
+    /* Set the images for each side */
     .front  { transform: translateZ(100px); background-image: url('front-image.jpg'); }
     .back   { transform: rotateY(180deg) translateZ(100px); background-image: url('back-image.jpg'); }
     .left   { transform: rotateY(-90deg) translateZ(100px); background-image: url('left-image.jpg'); }
@@ -41,7 +42,7 @@
   </style>
 </head>
 <body>
-  <div class="cube" id="cube">
+  <div class="cube" onclick="changeSide()">
     <div class="front"></div>
     <div class="back"></div>
     <div class="left"></div>
@@ -51,40 +52,22 @@
   </div>
 
   <script>
-    const cube = document.getElementById('cube');
-    let isDragging = false;
-    let startX, startY, currentX = 0, currentY = 0;
+    let currentSide = 0;
+    const cube = document.querySelector('.cube');
+    const sides = [
+      { rotateX: 0, rotateY: 0 },
+      { rotateX: 90, rotateY: 0 },
+      { rotateX: 180, rotateY: 0 },
+      { rotateX: 270, rotateY: 0 },
+      { rotateX: 0, rotateY: 90 },
+      { rotateX: 0, rotateY: -90 }
+    ];
 
-    // Event listener to initiate drag
-    cube.addEventListener('mousedown', (e) => {
-      isDragging = true;
-      startX = e.clientX;
-      startY = e.clientY;
-      cube.style.cursor = 'grabbing'; // Change cursor style to grabbing
-    });
-
-    // Event listener to handle drag movement
-    document.addEventListener('mousemove', (e) => {
-      if (!isDragging) return;
-
-      const dx = e.clientX - startX;
-      const dy = e.clientY - startY;
-
-      // Update cube rotation based on mouse movement
-      currentX += dy * 0.5;  // Rotate along X axis
-      currentY += dx * 0.5;  // Rotate along Y axis
-
-      cube.style.transform = `rotateX(${currentX}deg) rotateY(${currentY}deg)`;
-
-      startX = e.clientX;
-      startY = e.clientY;
-    });
-
-    // Event listener to stop drag
-    document.addEventListener('mouseup', () => {
-      isDragging = false;
-      cube.style.cursor = 'grab'; // Change cursor back to grab
-    });
+    function changeSide() {
+      currentSide = (currentSide + 1) % sides.length;
+      const side = sides[currentSide];
+      cube.style.transform = `rotateX(${side.rotateX}deg) rotateY(${side.rotateY}deg)`;
+    }
   </script>
 </body>
 </html>
