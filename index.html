@@ -27,18 +27,16 @@
       position: absolute;
       width: 200px;
       height: 200px;
-      background-size: cover; /* Ensures the image fits the face */
-      background-position: center;
-      border: 2px solid black;
+      background-color: #3498db;
+      border: 2px solid black; /* Set border color to black */
     }
 
-    /* Set the images for each side */
-    .front  { transform: translateZ(100px); background-image: url('front-image.jpg'); }
-    .back   { transform: rotateY(180deg) translateZ(100px); background-image: url('back-image.jpg'); }
-    .left   { transform: rotateY(-90deg) translateZ(100px); background-image: url('left-image.jpg'); }
-    .right  { transform: rotateY(90deg) translateZ(100px); background-image: url('right-image.jpg'); }
-    .top    { transform: rotateX(90deg) translateZ(100px); background-image: url('top-image.jpg'); }
-    .bottom { transform: rotateX(-90deg) translateZ(100px); background-image: url('bottom-image.jpg'); }
+    .front  { transform: translateZ(100px); background-color: red; }
+    .back   { transform: rotateY(180deg) translateZ(100px); background-color: blue; }
+    .left   { transform: rotateY(-90deg) translateZ(100px); background-color: green; }
+    .right  { transform: rotateY(90deg) translateZ(100px); background-color: yellow; }
+    .top    { transform: rotateX(90deg) translateZ(100px); background-color: purple; }
+    .bottom { transform: rotateX(-90deg) translateZ(100px); background-color: orange; }
   </style>
 </head>
 <body>
