@@ -1,109 +1,25 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>3D Cube Click to Change Sides</title>
-  <style>
-    body {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      margin: 0;
-      background-color: #f0f0f0;
-      overflow: hidden;
-    }
-
-    .cube {
-      width: 200px;
-      height: 200px;
-      transform-style: preserve-3d;
-      transform: rotateX(0deg) rotateY(0deg);
-      transition: transform 1s;
-      cursor: pointer;
-      position: absolute;
-    }
-
-    .cube div {
-      position: absolute;
-      width: 200px;
-      height: 200px;
-      background-size: cover;
-      background-position: center;
-      border: 2px solid black;
-    }
-
-    /* Set the images for each side */
-    .front  { transform: translateZ(100px); background-image: url('front-image.jpg'); }
-    .back   { transform: rotateY(180deg) translateZ(100px); background-image: url('back-image.jpg'); }
-    .left   { transform: rotateY(-90deg) translateZ(100px); background-image: url('left-image.jpg'); }
-    .right  { transform: rotateY(90deg) translateZ(100px); background-image: url('right-image.jpg'); }
-    .top    { transform: rotateX(90deg) translateZ(100px); background-image: url('top-image.jpg'); }
-    .bottom { transform: rotateX(-90deg) translateZ(100px); background-image: url('bottom-image.jpg'); }
-  </style>
-</head>
-<body>
-  <div class="cube" onclick="changeSide()">
-    <div class="front"></div>
-    <div class="back"></div>
-    <div class="left"></div>
-    <div class="right"></div>
-    <div class="top"></div>
-    <div class="bottom"></div>
-  </div>
-
-  <script>
-    let currentSide = 0;
-    let isMouseDown = false;
-    let startX, startY;
-    let cubeOffsetX = 0, cubeOffsetY = 0;
-    const cube = document.querySelector('.cube');
-    
-    const sides = [
-      { rotateX: 0, rotateY: 0 },
-      { rotateX: 90, rotateY: 0 },
-      { rotateX: 180, rotateY: 0 },
-      { rotateX: 270, rotateY: 0 },
-      { rotateX: 0, rotateY: 90 },
-      { rotateX: 0, rotateY: -90 }
-    ];
-
-    function changeSide() {
-      currentSide = (currentSide + 1) % sides.length;
-      const side = sides[currentSide];
-      cube.style.transform = `rotateX(${side.rotateX}deg) rotateY(${side.rotateY}deg)`;
-    }
-
-    cube.addEventListener('mousedown', (e) => {
-      isMouseDown = true;
-      startX = e.clientX;
-      startY = e.clientY;
-      cube.style.transition = 'none'; // Disable smooth transitions during dragging
-    });
-
-    document.addEventListener('mousemove', (e) => {
-      if (!isMouseDown) return;
-
-      // Calculate movement
-      const deltaX = e.clientX - startX;
-      const deltaY = e.clientY - startY;
-
-      cubeOffsetX += deltaX;
-      cubeOffsetY += deltaY;
-
-      // Apply new position to the cube
-      cube.style.left = `${cubeOffsetX}px`;
-      cube.style.top = `${cubeOffsetY}px`;
-
-      startX = e.clientX;
-      startY = e.clientY;
-    });
-
-    document.addEventListener('mouseup', () => {
-      isMouseDown = false;
-      cube.style.transition = 'transform 1s'; // Re-enable smooth transitions
-    });
-  </script>
-</body>
+<html>
+  <head>
+    <link rel="stylesheet" type="text/css" href="index.css" />
+    <title>Teste Cubos</title>
+    <imagetitle></imagetitle>
+    <style>
+      body {
+        background-color: #5F9EA1;
+      }
+    </style>
+  </head>
+  <body>
+    <h1 class="title">Arranjo de Figuras</h1>
+    <div class="linkContainer.inicio">
+      <a class="linkinicio" href="./page1.html">
+        <img
+          src="./outros/botaoinicial.png"
+          alt="próximo.inicio"
+          width="30%"
+        />
+      </a>
+    </div>
+  </body>
 </html>
