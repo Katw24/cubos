@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Movable & Rotatable 3D Cube</title>
+  <style>
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      background-color: lightgrey;
+      overflow: hidden;
+    }
+
+    .scene {
+      width: 200px;
+      height: 200px;
+      perspective: 800px;
+      position: absolute;
+      cursor: grab;
+    }
+
+    .cube {
+      width: 100%;
+      height: 100%;
+      position: relative;
+      transform-style: preserve-3d;
+      transform: rotateX(0deg) rotateY(0deg);
+      transition: transform 0.1s;
+    }
+
+    .cube div {
+      position: absolute;
+      width: 200px;
+      height: 200px;
+      background-size: cover;
+      background-position: center;
+    }
+
+    .front  { transform: translateZ(100px); }
+    .back   { transform: rotateY(180deg) translateZ(100px); }
+    .left   { transform: rotateY(-90deg) translateZ(100px); }
+    .right  { transform: rotateY(90deg) translateZ(100px); }
+    .top    { transform: rotateX(90deg) translateZ(100px); }
+    .bottom { transform: rotateX(-90deg) translateZ(100px); }
+
+    .handle {
+      width: 12px;
+      height: 12px;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      cursor: move;
+      z-index: 10;
+      display: none; /* Initially hidden */
+      align-items: center;
+      justify-content: center;
+    }
+
+    .scene:hover .handle {
+      display: flex; /* Show only on hover */
+    }
+
+    .handle::before, .handle::after {
+      content: "";
+      position: absolute;
+      background-color: grey;
+      box-shadow: 0px 0px 2px rgba(0, 0, 0, 0.5);
+    }
+
+    .handle::before {
+      width: 12px;
+      height: 2px;
+    }
+
+    .handle::after {
+      width: 2px;
+      height: 12px;
+    }
+
+    .linkContainer {
+      position: fixed;  /* Keeps it in place even when scrolling */
+      right: 10px;      /* Places it on the right side */
+      top: 50%;         /* Positions it in the vertical center */
+     transform: translateY(-50%); /* Centers it vertically */
+     padding: 0;       /* Remove unnecessary padding */
+      text-align: right; /* Ensures proper alignment */
+    }
+  </style>
+</head>
+<body>
+  <div class="scene" id="scene">
+    <div class="cube" id="cube">
+      <div class="front"></div>
+      <div class="back"></div>
+      <div class="left"></div>
+      <div class="right"></div>
+      <div class="top"></div>
+      <div class="bottom"></div>
+    </div>
+    <div class="handle" id="handle"></div>
+  </div>
+  <div class="linkContainer">
+    <a class="link" href="./page5.html"> 
+      <img src="./outros/7604747.png" width="11%" alt="próximo"  align-items:"center">
+    </a>
+  </div>
+  <script>
+    let cube = document.getElementById('cube');
+    let scene = document.getElementById('scene');
+    let handle = document.getElementById('handle');
+    
+    let isRotating = false, isMoving = false;
+    let lastX, lastY;
+    let rotationX = 0, rotationY = 0;
+    let sceneX = window.innerWidth / 2, sceneY = window.innerHeight / 2;
+
+    const images = [
+      './ladoscubo/tdbra.png',
+      './ladoscubo/tdverm.png',
+      './ladoscubo/mm.png',
+      './ladoscubo/mmop.png',
+      './ladoscubo/tdbra.png',
+      './ladoscubo/tdverm.png'
+    ];
+
+    function shuffleArray(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+    }
+
+    // Shuffle the images array
+    shuffleArray(images);
+
+    // Apply the shuffled images to the cube sides
+    document.querySelector('.front').style.backgroundImage = `url(${images[0]})`;
+    document.querySelector('.back').style.backgroundImage = `url(${images[1]})`;
+    document.querySelector('.left').style.backgroundImage = `url(${images[2]})`;
+    document.querySelector('.right').style.backgroundImage = `url(${images[3]})`;
+    document.querySelector('.top').style.backgroundImage = `url(${images[4]})`;
+    document.querySelector('.bottom').style.backgroundImage = `url(${images[5]})`;
+
+    cube.addEventListener("mousedown", (e) => {
+      if (e.target === handle) return;
+      isRotating = true;
+      lastX = e.clientX;
+      lastY = e.clientY;
+    });
+
+    handle.addEventListener("mousedown", (e) => {
+      isMoving = true;
+      lastX = e.clientX;
+      lastY = e.clientY;
+      e.stopPropagation();
+    });
+
+    document.addEventListener("mousemove", (e) => {
+      if (isRotating) {
+        let deltaX = e.clientX - lastX;
+        let deltaY = e.clientY - lastY;
+        rotationY += deltaX * 0.5;
+        rotationX -= deltaY * 0.5;
+        cube.style.transform = `rotateX(${rotationX}deg) rotateY(${rotationY}deg)`;
+      }
+
+      if (isMoving) {
+        let deltaX = e.clientX - lastX;
+        let deltaY = e.clientY - lastY;
+        sceneX += deltaX;
+        sceneY += deltaY;
+        scene.style.left = `${sceneX}px`;
+        scene.style.top = `${sceneY}px`;
+      }
+
+      lastX = e.clientX;
+      lastY = e.clientY;
+    });
+
+    document.addEventListener("mouseup", () => {
+      isRotating = false;
+      isMoving = false;
+    });
+  </script>
+</body>
+</html>
