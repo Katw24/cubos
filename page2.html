@@ -37,12 +37,12 @@
       background-position: center;
     }
 
-    .front  { transform: translateZ(50px); background-image: url('./ladoscubo/tdbra.png'); }
-    .back   { transform: rotateY(180deg) translateZ(50px); background-image: url('./ladoscubo/tdverm.png'); }
-    .left   { transform: rotateY(-90deg) translateZ(50px); background-image: url('./ladoscubo/mm.png'); }
-    .right  { transform: rotateY(90deg) translateZ(50px); background-image: url('./ladoscubo/mmop.png'); }
-    .top    { transform: rotateX(90deg) translateZ(50px); background-image: url('./ladoscubo/tdbra.png'); }
-    .bottom { transform: rotateX(-90deg) translateZ(50px); background-image: url('./ladoscubo/tdverm.png'); }
+    .front  { transform: translateZ(50px); }
+    .back   { transform: rotateY(180deg) translateZ(50px); }
+    .left   { transform: rotateY(-90deg) translateZ(50px); }
+    .right  { transform: rotateY(90deg) translateZ(50px); }
+    .top    { transform: rotateX(90deg) translateZ(50px); }
+    .bottom { transform: rotateX(-90deg) translateZ(50px); }
 
     .handle {
       width: 8px; /* Smaller handle */
@@ -100,9 +100,12 @@
       position: fixed;  /* Keeps it in place even when scrolling */
       right: 10px;      /* Places it on the right side */
       top: 50%;         /* Positions it in the vertical center */
-     transform: translateY(-50%); /* Centers it vertically */
-     padding: 0;       /* Remove unnecessary padding */
+      transform: translateY(-50%); /* Centers it vertically */
+      padding: 0;       /* Remove unnecessary padding */
       text-align: right; /* Ensures proper alignment */
+      display: flex;    /* Enable flexbox */
+      flex-direction: column; /* Stack buttons vertically */
+      gap: 10px;        /* Adds space between the buttons */
     }
   </style>
 </head>
@@ -156,10 +159,9 @@
     <a class="link" href="./page6.html"> 
       <img src="./outros/7604747.png" width="11%" alt="próximo"  align-items:"center">
     </a>
-  </div>
-    <div class="linkContainer">
-    <a class="link" href="./page1.html"> 
-      <img src="./outros/7604747.png" width="11%" alt="próximo"  align-items:"center">
+    <!-- You can add more next buttons here if needed -->
+    <a class="link" href="./page1.html">
+      <img src="./outros/7604747.png" width="11%" alt="next"  align-items:"center">
     </a>
   </div>
   <!-- Image box in the upper right corner -->
@@ -167,12 +169,41 @@
     <img src="your-image-url.jpg" alt="Sample Image">
   </div>
   <script>
-    // JavaScript remains the same for all cubes
+    // Images for randomizing
+    const images = [
+      './ladoscubo/tdbra.png',
+      './ladoscubo/tdverm.png',
+      './ladoscubo/mm.png',
+      './ladoscubo/mmop.png',
+      './ladoscubo/tdbra.png',
+      './ladoscubo/tdverm.png'
+    ];
+
+    function shuffleArray(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+    }
+
+    // Function to assign random images to each cube's sides
+    function applyRandomImages(cube) {
+      shuffleArray(images);
+      cube.querySelector('.front').style.backgroundImage = `url(${images[0]})`;
+      cube.querySelector('.back').style.backgroundImage = `url(${images[1]})`;
+      cube.querySelector('.left').style.backgroundImage = `url(${images[2]})`;
+      cube.querySelector('.right').style.backgroundImage = `url(${images[3]})`;
+      cube.querySelector('.top').style.backgroundImage = `url(${images[4]})`;
+      cube.querySelector('.bottom').style.backgroundImage = `url(${images[5]})`;
+    }
+
+    // Select all the cube scenes and apply random images
     let scenes = document.querySelectorAll('.scene');
     scenes.forEach(scene => {
       let cube = scene.querySelector('.cube');
-      let handle = scene.querySelector('.handle');
+      applyRandomImages(cube); // Apply random images to each cube
 
+      let handle = scene.querySelector('.handle');
       let isRotating = false, isMoving = false;
       let lastX, lastY;
       let rotationX = 0, rotationY = 0;
