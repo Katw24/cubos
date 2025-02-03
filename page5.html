@@ -27,7 +27,6 @@
       height: 100%;
       position: relative;
       transform-style: preserve-3d;
-      transform: rotateX(0deg) rotateY(0deg);
       transition: transform 0.1s;
     }
 
@@ -245,15 +244,37 @@
   </div>
 
   <script>
-    // Apply random face visible at first
-    function randomizeCubeFaces(cube) {
+    // Function to initialize the random face visibility without rotating the cube
+    function randomizeCubeVisibleFace(cube) {
       const faces = ['front', 'back', 'left', 'right', 'top', 'bottom'];
       const randomFace = faces[Math.floor(Math.random() * faces.length)];
-      cube.style.transform = `rotateX(30deg) rotateY(${Math.random() * 360}deg)`; // Just for randomness in rotation
+
+      // Apply rotation to make the chosen face visible
+      switch(randomFace) {
+        case 'front':
+          cube.style.transform = "rotateX(0deg) rotateY(0deg)";
+          break;
+        case 'back':
+          cube.style.transform = "rotateX(0deg) rotateY(180deg)";
+          break;
+        case 'left':
+          cube.style.transform = "rotateX(0deg) rotateY(-90deg)";
+          break;
+        case 'right':
+          cube.style.transform = "rotateX(0deg) rotateY(90deg)";
+          break;
+        case 'top':
+          cube.style.transform = "rotateX(90deg) rotateY(0deg)";
+          break;
+        case 'bottom':
+          cube.style.transform = "rotateX(-90deg) rotateY(0deg)";
+          break;
+      }
     }
 
+    // Initialize each cube with a random face visible
     document.querySelectorAll('.cube').forEach(cube => {
-      randomizeCubeFaces(cube);
+      randomizeCubeVisibleFace(cube);
     });
 
     // Rotate the cubes on drag
