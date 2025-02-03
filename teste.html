@@ -14,7 +14,6 @@
       background-color: lightgrey;
       overflow: hidden;
     }
-
     .scene {
       width: 100px; /* Smaller width */
       height: 100px; /* Smaller height */
@@ -114,14 +113,22 @@
       object-fit: cover; /* Ensure the image covers the box without distortion */
     }
 
-    .linkContainer {
-      position: fixed;  /* Keeps it in place even when scrolling */
-      right: 10px;      /* Places it on the right side */
-      top: 50%;         /* Positions it in the vertical center */
-      transform: translateY(-50%); /* Centers it vertically */
-      padding: 0;       /* Remove unnecessary padding */
-      text-align: right; /* Ensures proper alignment */
-    }
+.linkContainer {
+  position: fixed;  /* Keeps it in place even when scrolling */
+  right: 10px;      /* Places it on the right side */
+  top: 50%;         /* Positions it in the vertical center */
+  transform: translateY(-50%); /* Centers it vertically */
+  padding: 0;       /* Remove unnecessary padding */
+  text-align: right; /* Ensures proper alignment */
+  display: flex;     /* Use flexbox to stack elements vertically */
+  flex-direction: column; /* Stack the buttons vertically */
+  gap: 10px;         /* Adds space between buttons */
+}
+
+.linkContainer .link {
+  display: block; /* Ensures that each link takes full width */
+}
+
   </style>
 </head>
 <body>
