@@ -14,10 +14,11 @@
       background-color: lightgrey;
       overflow: hidden;
     }
+
     .scene {
-      width: 100px; /* Smaller width */
-      height: 100px; /* Smaller height */
-      perspective: 400px; /* Adjusted perspective for smaller size */
+      width: 100px;
+      height: 100px;
+      perspective: 400px;
       position: absolute;
       cursor: grab;
     }
@@ -33,35 +34,36 @@
 
     .cube div {
       position: absolute;
-      width: 100px; /* Smaller width */
-      height: 100px; /* Smaller height */
+      width: 100px;
+      height: 100px;
       background-size: cover;
       background-position: center;
     }
 
-    .front  { transform: translateZ(50px); }
-    .back   { transform: rotateY(180deg) translateZ(50px); }
-    .left   { transform: rotateY(-90deg) translateZ(50px); }
-    .right  { transform: rotateY(90deg) translateZ(50px); }
-    .top    { transform: rotateX(90deg) translateZ(50px); }
-    .bottom { transform: rotateX(-90deg) translateZ(50px); }
+    /* Fixed positions for cube sides */
+    .front  { transform: translateZ(100px); background-image: url('./ladoscubo/tdbra.png'); }
+    .back   { transform: rotateY(180deg) translateZ(100px); background-image: url('./ladoscubo/tdverm.png'); }
+    .left   { transform: rotateY(-90deg) translateZ(100px); background-image: url('./ladoscubo/mm.png'); }
+    .right  { transform: rotateY(90deg) translateZ(100px); background-image: url('./ladoscubo/mmop.png'); }
+    .top    { transform: rotateX(90deg) translateZ(100px); background-image: url('./ladoscubo/tdbra.png'); }
+    .bottom { transform: rotateX(-90deg) translateZ(100px); background-image: url('./ladoscubo/tdverm.png'); }
 
     .handle {
-      width: 8px; /* Smaller handle */
-      height: 8px; /* Smaller handle */
+      width: 8px;
+      height: 8px;
       position: absolute;
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
       cursor: move;
       z-index: 10;
-      display: none; /* Initially hidden */
+      display: none;
       align-items: center;
       justify-content: center;
     }
 
     .scene:hover .handle {
-      display: flex; /* Show only on hover */
+      display: flex;
     }
 
     .handle::before, .handle::after {
@@ -72,27 +74,14 @@
     }
 
     .handle::before {
-      width: 8px; /* Smaller handle */
+      width: 8px;
       height: 2px;
     }
 
     .handle::after {
       width: 2px;
-      height: 8px; /* Smaller handle */
+      height: 8px;
     }
-
-    /* Positioning for 9 cubes using pixels */
-    .scene:nth-child(1) { left: 50px; top: 150px; } /* Top cube on the left */
-    .scene:nth-child(2) { left: 50px; top: 50%; transform: translateY(-50%); } /* Middle cube on the left */
-    .scene:nth-child(3) { left: 50px; bottom: 150px; } /* Bottom cube on the left */
-
-    .scene:nth-child(4) { left: 200px; top: 50px; } /* Left cube at the top */
-    .scene:nth-child(5) { left: 350px; top: 50px; } /* Middle cube at the top */
-    .scene:nth-child(6) { left: 500px; top: 50px; } /* Right cube at the top */
-
-    .scene:nth-child(7) { left: 200px; bottom: 50px; } /* Left cube at the bottom */
-    .scene:nth-child(8) { left: 350px; bottom: 50px; } /* Middle cube at the bottom */
-    .scene:nth-child(9) { left: 500px; bottom: 50px; } /* Right cube at the bottom */
 
     /* Image box styling */
     .image-box {
@@ -101,33 +90,33 @@
       right: 0;
       width: 200px;
       height: 200px;
-      background-color: white; /* Optional: Add a background color */
-      border: 2px solid grey; /* Optional: Add a border */
-      box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5); /* Optional: Add a shadow */
-      overflow: hidden; /* Ensure the image stays within the box */
+      background-color: white;
+      border: 2px solid grey;
+      box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+      overflow: hidden;
     }
 
     .image-box img {
       width: 100%;
       height: 100%;
-      object-fit: cover; /* Ensure the image covers the box without distortion */
+      object-fit: cover;
     }
 
-.linkContainer {
-  position: fixed;  /* Keeps it in place even when scrolling */
-  right: 10px;      /* Places it on the right side */
-  top: 50%;         /* Positions it in the vertical center */
-  transform: translateY(-50%); /* Centers it vertically */
-  padding: 0;       /* Remove unnecessary padding */
-  text-align: right; /* Ensures proper alignment */
-  display: flex;     /* Use flexbox to stack elements vertically */
-  flex-direction: column; /* Stack the buttons vertically */
-  gap: 10px;         /* Adds space between buttons */
-}
+    .linkContainer {
+      position: fixed;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      padding: 0;
+      text-align: right;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
 
-.linkContainer .link {
-  display: block; /* Ensures that each link takes full width */
-}
+    .linkContainer .link {
+      display: block;
+    }
 
   </style>
 </head>
@@ -144,94 +133,8 @@
     </div>
     <div class="handle"></div>
   </div>
-  <div class="scene">
-    <div class="cube">
-      <div class="front"></div>
-      <div class="back"></div>
-      <div class="left"></div>
-      <div class="right"></div>
-      <div class="top"></div>
-      <div class="bottom"></div>
-    </div>
-    <div class="handle"></div>
-  </div>
-  <div class="scene">
-    <div class="cube">
-      <div class="front"></div>
-      <div class="back"></div>
-      <div class="left"></div>
-      <div class="right"></div>
-      <div class="top"></div>
-      <div class="bottom"></div>
-    </div>
-    <div class="handle"></div>
-  </div>
-  <div class="scene">
-    <div class="cube">
-      <div class="front"></div>
-      <div class="back"></div>
-      <div class="left"></div>
-      <div class="right"></div>
-      <div class="top"></div>
-      <div class="bottom"></div>
-    </div>
-    <div class="handle"></div>
-  </div>
-  <div class="scene">
-    <div class="cube">
-      <div class="front"></div>
-      <div class="back"></div>
-      <div class="left"></div>
-      <div class="right"></div>
-      <div class="top"></div>
-      <div class="bottom"></div>
-    </div>
-    <div class="handle"></div>
-  </div>
-  <div class="scene">
-    <div class="cube">
-      <div class="front"></div>
-      <div class="back"></div>
-      <div class="left"></div>
-      <div class="right"></div>
-      <div class="top"></div>
-      <div class="bottom"></div>
-    </div>
-    <div class="handle"></div>
-  </div>
-  <div class="scene">
-    <div class="cube">
-      <div class="front"></div>
-      <div class="back"></div>
-      <div class="left"></div>
-      <div class="right"></div>
-      <div class="top"></div>
-      <div class="bottom"></div>
-    </div>
-    <div class="handle"></div>
-  </div>
-  <div class="scene">
-    <div class="cube">
-      <div class="front"></div>
-      <div class="back"></div>
-      <div class="left"></div>
-      <div class="right"></div>
-      <div class="top"></div>
-      <div class="bottom"></div>
-    </div>
-    <div class="handle"></div>
-  </div>
-  <div class="scene">
-    <div class="cube">
-      <div class="front"></div>
-      <div class="back"></div>
-      <div class="left"></div>
-      <div class="right"></div>
-      <div class="top"></div>
-      <div class="bottom"></div>
-    </div>
-    <div class="handle"></div>
-  </div>
+  
+  <!-- Your image box and other content here -->
   <div class="linkContainer">
     <a class="link" href="./page5.html">
       <img src="./outros/7604747.png" width="11%" alt="próximo">
@@ -240,34 +143,29 @@
       <img src="./outros/7604747.png" width="11%" alt="próximo">
     </a>
   </div>
+
   <div class="image-box">
     <img src="your-image-url.jpg" alt="Sample Image">
   </div>
 
   <script>
-    // Image URLs array for cube sides
-    const images = [
-      './ladoscubo/tdbra.png',
-      './ladoscubo/tdverm.png',
-      './ladoscubo/mm.png',
-      './ladoscubo/mmop.png'
-    ];
-
-    function randomizeCubeFaces(cube) {
-      const faces = ['front', 'back', 'left', 'right', 'top', 'bottom'];
-      faces.forEach(face => {
-        const faceElement = cube.querySelector(`.${face}`);
-        const randomImage = images[Math.floor(Math.random() * images.length)];
-        faceElement.style.backgroundImage = `url(${randomImage})`;
-      });
+    // Randomize the cube rotation to expose a random face
+    function randomizeCube() {
+      const rotationX = Math.floor(Math.random() * 360);
+      const rotationY = Math.floor(Math.random() * 360);
+      const rotationZ = Math.floor(Math.random() * 360);
+      
+      const cube = document.querySelector('.cube');
+      cube.style.transform = `rotateX(${rotationX}deg) rotateY(${rotationY}deg) rotateZ(${rotationZ}deg)`;
     }
 
-    // Apply random faces to each cube
-    document.querySelectorAll('.cube').forEach(cube => {
-      randomizeCubeFaces(cube);
-    });
+    // Call the function to randomize the rotation when the page loads
+    window.onload = randomizeCube;
 
-    // Rotate the cubes on drag
+    // Optionally: You can set an interval to keep changing the rotation every few seconds
+    // setInterval(randomizeCube, 3000);
+
+    // Cube rotation control (drag-to-rotate functionality)
     let scenes = document.querySelectorAll('.scene');
     scenes.forEach(scene => {
       let cube = scene.querySelector('.cube');
