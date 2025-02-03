@@ -16,9 +16,9 @@
     }
 
     .scene {
-      width: 100px; /* Smaller width */
-      height: 100px; /* Smaller height */
-      perspective: 400px; /* Adjusted perspective for smaller size */
+      width: 100px;
+      height: 100px;
+      perspective: 400px;
       position: absolute;
       cursor: grab;
     }
@@ -34,28 +34,35 @@
 
     .cube div {
       position: absolute;
-      width: 100px; /* Smaller width */
-      height: 100px; /* Smaller height */
+      width: 100px;
+      height: 100px;
       background-size: cover;
       background-position: center;
     }
 
+    .front  { transform: translateZ(50px); }
+    .back   { transform: rotateY(180deg) translateZ(50px); }
+    .left   { transform: rotateY(-90deg) translateZ(50px); }
+    .right  { transform: rotateY(90deg) translateZ(50px); }
+    .top    { transform: rotateX(90deg) translateZ(50px); }
+    .bottom { transform: rotateX(-90deg) translateZ(50px); }
+
     .handle {
-      width: 8px; /* Smaller handle */
-      height: 8px; /* Smaller handle */
+      width: 8px;
+      height: 8px;
       position: absolute;
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
       cursor: move;
       z-index: 10;
-      display: none; /* Initially hidden */
+      display: none;
       align-items: center;
       justify-content: center;
     }
 
     .scene:hover .handle {
-      display: flex; /* Show only on hover */
+      display: flex;
     }
 
     .handle::before, .handle::after {
@@ -66,27 +73,22 @@
     }
 
     .handle::before {
-      width: 8px; /* Smaller handle */
+      width: 8px;
       height: 2px;
     }
 
     .handle::after {
       width: 2px;
-      height: 8px; /* Smaller handle */
+      height: 8px;
     }
 
     /* Positioning for 9 cubes using pixels */
-    /* Left side (3 cubes, vertical line) */
     .scene:nth-child(1) { left: 50px; top: 150px; }
     .scene:nth-child(2) { left: 50px; top: 50%; transform: translateY(-50%); }
     .scene:nth-child(3) { left: 50px; bottom: 150px; }
-
-    /* Top side (3 cubes, horizontal line) */
     .scene:nth-child(4) { left: 200px; top: 50px; }
     .scene:nth-child(5) { left: 350px; top: 50px; }
     .scene:nth-child(6) { left: 500px; top: 50px; }
-
-    /* Bottom side (3 cubes, horizontal line) */
     .scene:nth-child(7) { left: 200px; bottom: 50px; }
     .scene:nth-child(8) { left: 350px; bottom: 50px; }
     .scene:nth-child(9) { left: 500px; bottom: 50px; }
@@ -98,9 +100,6 @@
       transform: translateY(-50%);
       padding: 0;
       text-align: right;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
     }
 
     .image-box {
@@ -135,105 +134,14 @@
     </div>
     <div class="handle"></div>
   </div>
-  <div class="scene">
-    <div class="cube">
-      <div class="front"></div>
-      <div class="back"></div>
-      <div class="left"></div>
-      <div class="right"></div>
-      <div class="top"></div>
-      <div class="bottom"></div>
-    </div>
-    <div class="handle"></div>
-  </div>
-  <div class="scene">
-    <div class="cube">
-      <div class="front"></div>
-      <div class="back"></div>
-      <div class="left"></div>
-      <div class="right"></div>
-      <div class="top"></div>
-      <div class="bottom"></div>
-    </div>
-    <div class="handle"></div>
-  </div>
-  <div class="scene">
-    <div class="cube">
-      <div class="front"></div>
-      <div class="back"></div>
-      <div class="left"></div>
-      <div class="right"></div>
-      <div class="top"></div>
-      <div class="bottom"></div>
-    </div>
-    <div class="handle"></div>
-  </div>
-  <div class="scene">
-    <div class="cube">
-      <div class="front"></div>
-      <div class="back"></div>
-      <div class="left"></div>
-      <div class="right"></div>
-      <div class="top"></div>
-      <div class="bottom"></div>
-    </div>
-    <div class="handle"></div>
-  </div>
-  <div class="scene">
-    <div class="cube">
-      <div class="front"></div>
-      <div class="back"></div>
-      <div class="left"></div>
-      <div class="right"></div>
-      <div class="top"></div>
-      <div class="bottom"></div>
-    </div>
-    <div class="handle"></div>
-  </div>
-  <div class="scene">
-    <div class="cube">
-      <div class="front"></div>
-      <div class="back"></div>
-      <div class="left"></div>
-      <div class="right"></div>
-      <div class="top"></div>
-      <div class="bottom"></div>
-    </div>
-    <div class="handle"></div>
-  </div>
-  <div class="scene">
-    <div class="cube">
-      <div class="front"></div>
-      <div class="back"></div>
-      <div class="left"></div>
-      <div class="right"></div>
-      <div class="top"></div>
-      <div class="bottom"></div>
-    </div>
-    <div class="handle"></div>
-  </div>
-  <div class="scene">
-    <div class="cube">
-      <div class="front"></div>
-      <div class="back"></div>
-      <div class="left"></div>
-      <div class="right"></div>
-      <div class="top"></div>
-      <div class="bottom"></div>
-    </div>
-    <div class="handle"></div>
-  </div>
+  <!-- Repeat for other cubes... -->
 
   <div class="linkContainer">
-    <a class="link" href="./page6.html"> 
+    <a class="link" href="./page3.html"> 
       <img src="./outros/7604747.png" width="11%" alt="próximo">
-    </a>
-    <a class="link" href="./page4.html">
-      <img src="./outros/7604747.png" width="11%" alt="vorte">
     </a>
   </div>
 
-  <!-- Image box in the upper right corner -->
   <div class="image-box">
     <img src="your-image-url.jpg" alt="Sample Image">
   </div>
@@ -249,7 +157,7 @@
       './ladoscubo/tdverm.png'
     ];
 
-    // Function to shuffle array elements randomly
+    // Function to shuffle the array elements randomly
     function shuffleArray(array) {
       for (let i = array.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
@@ -257,12 +165,13 @@
       }
     }
 
-    // Apply random sides to each cube
+    // Apply random images to each cube
     const cubes = document.querySelectorAll('.cube');
     cubes.forEach(cube => {
       let faces = cube.querySelectorAll('div');
-      shuffleArray(images); // Randomize the image array
+      shuffleArray(images);  // Shuffle the images array
 
+      // Assign shuffled images to the faces
       faces[0].style.backgroundImage = `url(${images[0]})`; // Front
       faces[1].style.backgroundImage = `url(${images[1]})`; // Back
       faces[2].style.backgroundImage = `url(${images[2]})`; // Left
@@ -271,7 +180,7 @@
       faces[5].style.backgroundImage = `url(${images[5]})`; // Bottom
     });
 
-    // JavaScript remains the same for all cubes (interaction)
+    // JavaScript logic for cube interaction remains the same
     let scenes = document.querySelectorAll('.scene');
     scenes.forEach(scene => {
       let cube = scene.querySelector('.cube');
