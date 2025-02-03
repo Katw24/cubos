@@ -93,17 +93,29 @@
     .scene:nth-child(8) { left: 350px; bottom: 50px; } /* Middle cube at the bottom */
     .scene:nth-child(9) { left: 500px; bottom: 50px; } /* Right cube at the bottom */
 
-    /* Image box styling */
-    .image-box {
-      position: absolute;
-      top: 0;
-      right: 0;
+    /* Video box at the bottom right */
+    .video-box {
+      position: fixed;
+      bottom: 20px; /* Position at the bottom */
+      right: 20px;  /* Position at the right */
       width: 200px;
       height: 200px;
-      background-color: white; /* Optional: Add a background color */
-      border: 2px solid grey; /* Optional: Add a border */
-      box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5); /* Optional: Add a shadow */
-      overflow: hidden; /* Ensure the image stays within the box */
+      background-color: white;
+      border: 2px solid grey;
+      box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+    }
+
+    /* Image box at the upper right */
+    .image-box {
+      position: fixed;
+      top: 20px;    /* Position at the top */
+      right: 20px;  /* Position at the right */
+      width: 200px;
+      height: 200px;
+      background-color: white;
+      border: 2px solid grey;
+      box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+      overflow: hidden;
     }
 
     .image-box img {
@@ -112,22 +124,21 @@
       object-fit: cover; /* Ensure the image covers the box without distortion */
     }
 
-.linkContainer {
-  position: fixed;  /* Keeps it in place even when scrolling */
-  right: 10px;      /* Places it on the right side */
-  top: 50%;         /* Positions it in the vertical center */
-  transform: translateY(-50%); /* Centers it vertically */
-  padding: 0;       /* Remove unnecessary padding */
-  text-align: right; /* Ensures proper alignment */
-  display: flex;     /* Use flexbox to stack elements vertically */
-  flex-direction: column; /* Stack the buttons vertically */
-  gap: 10px;         /* Adds space between buttons */
-}
+    .linkContainer {
+      position: fixed;  /* Keeps it in place even when scrolling */
+      right: 10px;      /* Places it on the right side */
+      top: 50%;         /* Positions it in the vertical center */
+      transform: translateY(-50%); /* Centers it vertically */
+      padding: 0;       /* Remove unnecessary padding */
+      text-align: right; /* Ensures proper alignment */
+      display: flex;     /* Use flexbox to stack elements vertically */
+      flex-direction: column; /* Stack the buttons vertically */
+      gap: 10px;         /* Adds space between buttons */
+    }
 
-.linkContainer .link {
-  display: block; /* Ensures that each link takes full width */
-}
-
+    .linkContainer .link {
+      display: block; /* Ensures that each link takes full width */
+    }
   </style>
 </head>
 <body>
@@ -231,6 +242,20 @@
     </div>
     <div class="handle"></div>
   </div>
+
+  <!-- Video Box (bottom-right) -->
+  <div class="video-box">
+    <video width="100%" height="100%" controls>
+      <source src="teste5.mp4" type="video/mp4">
+      Your browser does not support the video tag.
+    </video>
+  </div>
+
+  <!-- Image Box (upper-right) -->
+  <div class="image-box">
+    <img src="your-image-url.jpg" alt="Sample Image">
+  </div>
+
   <div class="linkContainer">
     <a class="link" href="./page7.html">
       <img src="./outros/7604747.png" width="11%" alt="próximo">
@@ -238,9 +263,6 @@
     <a class="link" href="./page4.html">
       <img src="./outros/7604747.png" width="11%" alt="próximo">
     </a>
-  </div>
-  <div class="image-box">
-    <img src="your-image-url.jpg" alt="Sample Image">
   </div>
 
   <script>
