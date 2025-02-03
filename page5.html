@@ -116,13 +116,17 @@
       height: 100%;
       object-fit: cover; /* Ensure the image covers the box without distortion */
     }
+
     .linkContainer {
       position: fixed;  /* Keeps it in place even when scrolling */
       right: 10px;      /* Places it on the right side */
       top: 50%;         /* Positions it in the vertical center */
-     transform: translateY(-50%); /* Centers it vertically */
-     padding: 0;       /* Remove unnecessary padding */
+      transform: translateY(-50%); /* Centers it vertically */
+      padding: 0;       /* Remove unnecessary padding */
       text-align: right; /* Ensures proper alignment */
+      display: flex;     /* Use flexbox */
+      flex-direction: column; /* Arrange buttons vertically */
+      gap: 10px;         /* Adds space between the buttons */
     }
   </style>
 </head>
@@ -229,7 +233,11 @@
   </div>
   <div class="linkContainer">
     <a class="link" href="./page3.html"> 
-      <img src="./outros/7604747.png" width="11%" alt="próximo"  align-items:"center">
+      <img src="./outros/7604747.png" width="11%" alt="próximo">
+    </a>
+    <!-- Additional button for next page -->
+    <a class="link" href="./page4.html">
+      <img src="./outros/next.png" width="11%" alt="next">
     </a>
   </div>
   <!-- Image box in the upper right corner -->
