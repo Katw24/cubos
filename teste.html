@@ -14,6 +14,7 @@
       background-color: lightgrey;
       overflow: hidden;
     }
+
     .scene {
       width: 100px; /* Smaller width */
       height: 100px; /* Smaller height */
@@ -21,6 +22,7 @@
       position: absolute;
       cursor: grab;
     }
+
     .cube {
       width: 100%;
       height: 100%;
@@ -29,6 +31,7 @@
       transform: rotateX(0deg) rotateY(0deg);
       transition: transform 0.1s;
     }
+
     .cube div {
       position: absolute;
       width: 100px; /* Smaller width */
@@ -36,6 +39,7 @@
       background-size: cover;
       background-position: center;
     }
+
     .front  { transform: translateZ(50px); }
     .back   { transform: rotateY(180deg) translateZ(50px); }
     .left   { transform: rotateY(-90deg) translateZ(50px); }
@@ -56,23 +60,28 @@
       align-items: center;
       justify-content: center;
     }
+
     .scene:hover .handle {
       display: flex; /* Show only on hover */
     }
+
     .handle::before, .handle::after {
       content: "";
       position: absolute;
       background-color: grey;
       box-shadow: 0px 0px 2px rgba(0, 0, 0, 0.5);
     }
+
     .handle::before {
       width: 8px; /* Smaller handle */
       height: 2px;
     }
+
     .handle::after {
       width: 2px;
       height: 8px; /* Smaller handle */
     }
+
     /* Positioning for 9 cubes using pixels */
     .scene:nth-child(1) { left: 50px; top: 150px; } /* Top cube on the left */
     .scene:nth-child(2) { left: 50px; top: 50%; transform: translateY(-50%); } /* Middle cube on the left */
@@ -85,6 +94,7 @@
     .scene:nth-child(7) { left: 200px; bottom: 50px; } /* Left cube at the bottom */
     .scene:nth-child(8) { left: 350px; bottom: 50px; } /* Middle cube at the bottom */
     .scene:nth-child(9) { left: 500px; bottom: 50px; } /* Right cube at the bottom */
+
     /* Image box styling */
     .image-box {
       position: absolute;
@@ -97,11 +107,13 @@
       box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5); /* Optional: Add a shadow */
       overflow: hidden; /* Ensure the image stays within the box */
     }
+
     .image-box img {
       width: 100%;
       height: 100%;
       object-fit: cover; /* Ensure the image covers the box without distortion */
     }
+
     .linkContainer {
       position: fixed;  /* Keeps it in place even when scrolling */
       right: 10px;      /* Places it on the right side */
@@ -213,14 +225,17 @@
     </div>
     <div class="handle"></div>
   </div>
+
   <div class="linkContainer">
     <a class="link" href="./page3.html"> 
       <img src="./outros/7604747.png" width="11%" alt="próximo">
     </a>
   </div>
+  
   <div class="image-box">
     <img src="your-image-url.jpg" alt="Sample Image">
   </div>
+
   <script>
     // Image URLs array for cube sides
     const images = [
@@ -229,6 +244,7 @@
       './ladoscubo/mm.png',
       './ladoscubo/mmop.png'
     ];
+
     function randomizeCubeFaces(cube) {
       const faces = ['front', 'back', 'left', 'right', 'top', 'bottom'];
       faces.forEach(face => {
@@ -237,9 +253,63 @@
         faceElement.style.backgroundImage = `url(${randomImage})`;
       });
     }
+
     // Apply random faces to each cube
     document.querySelectorAll('.cube').forEach(cube => {
       randomizeCubeFaces(cube);
+    });
+
+    // Rotate the cubes on drag
+    let scenes = document.querySelectorAll('.scene');
+    scenes.forEach(scene => {
+      let cube = scene.querySelector('.cube');
+      let handle = scene.querySelector('.handle');
+
+      let isRotating = false, isMoving = false;
+      let lastX, lastY;
+      let rotationX = 0, rotationY = 0;
+      let sceneX = scene.offsetLeft, sceneY = scene.offsetTop;
+
+      cube.addEventListener("mousedown", (e) => {
+        if (e.target === handle) return;
+        isRotating = true;
+        lastX = e.clientX;
+        lastY = e.clientY;
+      });
+
+      handle.addEventListener("mousedown", (e) => {
+        isMoving = true;
+        lastX = e.clientX;
+        lastY = e.clientY;
+        e.stopPropagation();
+      });
+
+      document.addEventListener("mousemove", (e) => {
+        if (isRotating) {
+          let deltaX = e.clientX - lastX;
+          let deltaY = e.clientY - lastY;
+          rotationY += deltaX * 0.5;
+          rotationX -= deltaY * 0.5;
+          cube.style.transform = `rotateX(${rotationX}deg) rotateY(${rotationY}deg)`;
+        }
+
+        if (isMoving) {
+          let deltaX = e.clientX - lastX;
+          let deltaY = e.clientY - lastY;
+          sceneX += deltaX;
+          sceneY += deltaY;
+          scene.style.left = `${sceneX}px`;
+          scene.style.top = `${sceneY}px`;
+        }
+
+        lastX = e.clientX;
+        lastY = e.clientY;
+      });
+
+      document.addEventListener("mouseup", () => {
+        isRotating = false;
+        isMoving = false;
+      });
     });
   </script>
 </body>
