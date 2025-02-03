@@ -100,9 +100,12 @@
       position: fixed;  /* Keeps it in place even when scrolling */
       right: 10px;      /* Places it on the right side */
       top: 50%;         /* Positions it in the vertical center */
-     transform: translateY(-50%); /* Centers it vertically */
-     padding: 0;       /* Remove unnecessary padding */
+      transform: translateY(-50%); /* Centers it vertically */
+      padding: 0;       /* Remove unnecessary padding */
       text-align: right; /* Ensures proper alignment */
+      display: flex;    /* Enable flexbox */
+      flex-direction: column; /* Stack buttons vertically */
+      gap: 10px;        /* Adds space between the buttons */
     }
   </style>
 </head>
@@ -155,6 +158,10 @@
   <div class="linkContainer">
     <a class="link" href="./page6.html"> 
       <img src="./outros/7604747.png" width="11%" alt="próximo"  align-items:"center">
+    </a>
+    <!-- You can add more next buttons here if needed -->
+    <a class="link" href="./page7.html">
+      <img src="./outros/7604747.png" width="11%" alt="next"  align-items:"center">
     </a>
   </div>
   <!-- Image box in the upper right corner -->
