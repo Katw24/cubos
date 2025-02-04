@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cubos</title>
+  <style>
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      background-color: lightgrey;
+      overflow: hidden;
+    }
+    .scene {
+      width: 100px; /* Smaller width */
+      height: 100px; /* Smaller height */
+      perspective: 400px; /* Adjusted perspective for smaller size */
+      position: absolute;
+      cursor: grab;
+    }
+
+    .cube {
+      width: 100%;
+      height: 100%;
+      position: relative;
+      transform-style: preserve-3d;
+      transition: transform 0.1s;
+    }
+
+    .cube div {
+      position: absolute;
+      width: 100px; /* Smaller width */
+      height: 100px; /* Smaller height */
+      background-size: cover;
+      background-position: center;
+    }
+
+    .front  { transform: translateZ(50px); background-image: url('./ladoscubo/tdbra.png'); }
+    .back   { transform: rotateY(180deg) translateZ(50px); background-image: url('./ladoscubo/tdverm.png'); }
+    .left   { transform: rotateY(-90deg) translateZ(50px); background-image: url('./ladoscubo/mm.png'); }
+    .right  { transform: rotateY(90deg) translateZ(50px); background-image: url('./ladoscubo/mmop.png'); }
+    .top    { transform: rotateX(90deg) translateZ(50px); background-image: url('./ladoscubo/tdbra.png'); }
+    .bottom { transform: rotateX(-90deg) translateZ(50px); background-image: url('./ladoscubo/tdverm.png'); }
+
+    .handle {
+      width: 8px; /* Smaller handle */
+      height: 8px; /* Smaller handle */
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      cursor: move;
+      z-index: 10;
+      display: none; /* Initially hidden */
+      align-items: center;
+      justify-content: center;
+    }
+
+    .scene:hover .handle {
+      display: flex; /* Show only on hover */
+    }
+
+    .handle::before, .handle::after {
+      content: "";
+      position: absolute;
+      background-color: grey;
+      box-shadow: 0px 0px 2px rgba(0, 0, 0, 0.5);
+    }
+
+    .handle::before {
+      width: 8px; /* Smaller handle */
+      height: 2px;
+    }
+
+    .handle::after {
+      width: 2px;
+      height: 8px; /* Smaller handle */
+    }
+
+    /* Positioning for 9 cubes using pixels */
+    .scene:nth-child(1) { left: 50px; top: 150px; } /* Top cube on the left */
+    .scene:nth-child(2) { left: 50px; top: 50%; transform: translateY(-50%); } /* Middle cube on the left */
+    .scene:nth-child(3) { left: 50px; bottom: 150px; } /* Bottom cube on the left */
+
+    .scene:nth-child(4) { left: 200px; top: 50px; } /* Left cube at the top */
+    .scene:nth-child(5) { left: 350px; top: 50px; } /* Middle cube at the top */
+    .scene:nth-child(6) { left: 500px; top: 50px; } /* Right cube at the top */
+
+    .scene:nth-child(7) { left: 200px; bottom: 50px; } /* Left cube at the bottom */
+    .scene:nth-child(8) { left: 350px; bottom: 50px; } /* Middle cube at the bottom */
+    .scene:nth-child(9) { left: 500px; bottom: 50px; } /* Right cube at the bottom */
+
+    /* Video box at the bottom right */
+    .video-box {
+      position: fixed;
+      bottom: 20px; /* Position at the bottom */
+      right: 20px;  /* Position at the right */
+      width: 200px;
+      height: 200px;
+      background-color: white;
+      border: 2px solid grey;
+      box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+    }
+
+    /* Image box at the upper right */
+    .image-box {
+      position: fixed;
+      top: 20px;    /* Position at the top */
+      right: 20px;  /* Position at the right */
+      width: 200px;
+      height: 200px;
+      background-color: white;
+      border: 2px solid grey;
+      box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+      overflow: hidden;
+    }
+
+    .image-box img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover; /* Ensure the image covers the box without distortion */
+    }
+
+    .linkContainer {
+      position: fixed;  /* Keeps it in place even when scrolling */
+      right: 10px;      /* Places it on the right side */
+      top: 50%;         /* Positions it in the vertical center */
+      transform: translateY(-50%); /* Centers it vertically */
+      padding: 0;       /* Remove unnecessary padding */
+      text-align: right; /* Ensures proper alignment */
+      display: flex;     /* Use flexbox to stack elements vertically */
+      flex-direction: column; /* Stack the buttons vertically */
+      gap: 10px;         /* Adds space between buttons */
+    }
+
+    .linkContainer .link {
+      display: block; /* Ensures that each link takes full width */
+    }
+  </style>
+</head>
+<body>
+  <!-- 9 cubes -->
+  <div class="scene">
+    <div class="cube">
+      <div class="front"></div>
+      <div class="back"></div>
+      <div class="left"></div>
+      <div class="right"></div>
+      <div class="top"></div>
+      <div class="bottom"></div>
+    </div>
+    <div class="handle"></div>
+  </div>
+  <div class="scene">
+    <div class="cube">
+      <div class="front"></div>
+      <div class="back"></div>
+      <div class="left"></div>
+      <div class="right"></div>
+      <div class="top"></div>
+      <div class="bottom"></div>
+    </div>
+    <div class="handle"></div>
+  </div>
+  <div class="scene">
+    <div class="cube">
+      <div class="front"></div>
+      <div class="back"></div>
+      <div class="left"></div>
+      <div class="right"></div>
+      <div class="top"></div>
+      <div class="bottom"></div>
+    </div>
+    <div class="handle"></div>
+  </div>
+  <div class="scene">
+    <div class="cube">
+      <div class="front"></div>
+      <div class="back"></div>
+      <div class="left"></div>
+      <div class="right"></div>
+      <div class="top"></div>
+      <div class="bottom"></div>
+    </div>
+    <div class="handle"></div>
+  </div>
+  <div class="scene">
+    <div class="cube">
+      <div class="front"></div>
+      <div class="back"></div>
+      <div class="left"></div>
+      <div class="right"></div>
+      <div class="top"></div>
+      <div class="bottom"></div>
+    </div>
+    <div class="handle"></div>
+  </div>
+  <div class="scene">
+    <div class="cube">
+      <div class="front"></div>
+      <div class="back"></div>
+      <div class="left"></div>
+      <div class="right"></div>
+      <div class="top"></div>
+      <div class="bottom"></div>
+    </div>
+    <div class="handle"></div>
+  </div>
+  <div class="scene">
+    <div class="cube">
+      <div class="front"></div>
+      <div class="back"></div>
+      <div class="left"></div>
+      <div class="right"></div>
+      <div class="top"></div>
+      <div class="bottom"></div>
+    </div>
+    <div class="handle"></div>
+  </div>
+  <div class="scene">
+    <div class="cube">
+      <div class="front"></div>
+      <div class="back"></div>
+      <div class="left"></div>
+      <div class="right"></div>
+      <div class="top"></div>
+      <div class="bottom"></div>
+    </div>
+    <div class="handle"></div>
+  </div>
+  <div class="scene">
+    <div class="cube">
+      <div class="front"></div>
+      <div class="back"></div>
+      <div class="left"></div>
+      <div class="right"></div>
+      <div class="top"></div>
+      <div class="bottom"></div>
+    </div>
+    <div class="handle"></div>
+  </div>
+  <!-- Image Box (upper-right) -->
+  <div class="image-box">
+    <img src="./exemplos/ex14.png" alt="Sample Image">
+  </div>
+  
+  <!-- Video Box (bottom-right) -->
+  <div class="video-box">
+    <video width="100%" height="100%" controls>
+      <source src="./ladoscubo/teste6.mp4" type="video/mp4">
+      Your browser does not support the video tag.
+    </video>
+  </div>
+  
+  <script>
+    // Function to initialize the random face visibility without rotating the cube
+    function randomizeCubeVisibleFace(cube) {
+      const faces = ['front', 'back', 'left', 'right', 'top', 'bottom'];
+      const randomFace = faces[Math.floor(Math.random() * faces.length)];
+
+      // Apply rotation to make the chosen face visible
+      switch(randomFace) {
+        case 'front':
+          cube.style.transform = "rotateX(0deg) rotateY(0deg)";
+          break;
+        case 'back':
+          cube.style.transform = "rotateX(0deg) rotateY(180deg)";
+          break;
+        case 'left':
+          cube.style.transform = "rotateX(0deg) rotateY(-90deg)";
+          break;
+        case 'right':
+          cube.style.transform = "rotateX(0deg) rotateY(90deg)";
+          break;
+        case 'top':
+          cube.style.transform = "rotateX(90deg) rotateY(0deg)";
+          break;
+        case 'bottom':
+          cube.style.transform = "rotateX(-90deg) rotateY(0deg)";
+          break;
+      }
+    }
+
+    // Initialize each cube with a random face visible
+    document.querySelectorAll('.cube').forEach(cube => {
+      randomizeCubeVisibleFace(cube);
+    });
+
+    // Rotate the cubes on drag
+    let scenes = document.querySelectorAll('.scene');
+    scenes.forEach(scene => {
+      let cube = scene.querySelector('.cube');
+      let handle = scene.querySelector('.handle');
+
+      let isRotating = false, isMoving = false;
+      let lastX, lastY;
+      let rotationX = 0, rotationY = 0;
+      let sceneX = scene.offsetLeft, sceneY = scene.offsetTop;
+
+      cube.addEventListener("mousedown", (e) => {
+        if (e.target === handle) return;
+        isRotating = true;
+        lastX = e.clientX;
+        lastY = e.clientY;
+      });
+
+      handle.addEventListener("mousedown", (e) => {
+        isMoving = true;
+        lastX = e.clientX;
+        lastY = e.clientY;
+        e.stopPropagation();
+      });
+
+      document.addEventListener("mousemove", (e) => {
+        if (isRotating) {
+          let deltaX = e.clientX - lastX;
+          let deltaY = e.clientY - lastY;
+          rotationY += deltaX * 0.5;
+          rotationX -= deltaY * 0.5;
+          cube.style.transform = `rotateX(${rotationX}deg) rotateY(${rotationY}deg)`;
+        }
+
+        if (isMoving) {
+          let deltaX = e.clientX - lastX;
+          let deltaY = e.clientY - lastY;
+          sceneX += deltaX;
+          sceneY += deltaY;
+          scene.style.left = `${sceneX}px`;
+          scene.style.top = `${sceneY}px`;
+        }
+
+        lastX = e.clientX;
+        lastY = e.clientY;
+      });
+
+      document.addEventListener("mouseup", () => {
+        isRotating = false;
+        isMoving = false;
+      });
+    });
+  </script>
+</body>
+</html>

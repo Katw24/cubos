@@ -80,18 +80,11 @@
       height: 8px; /* Smaller handle */
     }
 
-    /* Positioning for 9 cubes using pixels */
-    .scene:nth-child(1) { left: 50px; top: 150px; } /* Top cube on the left */
-    .scene:nth-child(2) { left: 50px; top: 50%; transform: translateY(-50%); } /* Middle cube on the left */
-    .scene:nth-child(3) { left: 50px; bottom: 150px; } /* Bottom cube on the left */
-
-    .scene:nth-child(4) { left: 200px; top: 50px; } /* Left cube at the top */
-    .scene:nth-child(5) { left: 350px; top: 50px; } /* Middle cube at the top */
-    .scene:nth-child(6) { left: 500px; top: 50px; } /* Right cube at the top */
-
-    .scene:nth-child(7) { left: 200px; bottom: 50px; } /* Left cube at the bottom */
-    .scene:nth-child(8) { left: 350px; bottom: 50px; } /* Middle cube at the bottom */
-    .scene:nth-child(9) { left: 500px; bottom: 50px; } /* Right cube at the bottom */
+    /* Positioning for 4 cubes on the left */
+    .scene:nth-child(1) { left: 50px; top: 50px; } /* Top cube on the left */
+    .scene:nth-child(2) { left: 50px; top: 200px; } /* Second cube on the left */
+    .scene:nth-child(3) { left: 50px; top: 350px; } /* Third cube on the left */
+    .scene:nth-child(4) { left: 50px; top: 500px; } /* Bottom cube on the left */
 
     /* Video box at the bottom right */
     .video-box {
@@ -142,62 +135,7 @@
   </style>
 </head>
 <body>
-  <!-- 9 cubes -->
-  <div class="scene">
-    <div class="cube">
-      <div class="front"></div>
-      <div class="back"></div>
-      <div class="left"></div>
-      <div class="right"></div>
-      <div class="top"></div>
-      <div class="bottom"></div>
-    </div>
-    <div class="handle"></div>
-  </div>
-  <div class="scene">
-    <div class="cube">
-      <div class="front"></div>
-      <div class="back"></div>
-      <div class="left"></div>
-      <div class="right"></div>
-      <div class="top"></div>
-      <div class="bottom"></div>
-    </div>
-    <div class="handle"></div>
-  </div>
-  <div class="scene">
-    <div class="cube">
-      <div class="front"></div>
-      <div class="back"></div>
-      <div class="left"></div>
-      <div class="right"></div>
-      <div class="top"></div>
-      <div class="bottom"></div>
-    </div>
-    <div class="handle"></div>
-  </div>
-  <div class="scene">
-    <div class="cube">
-      <div class="front"></div>
-      <div class="back"></div>
-      <div class="left"></div>
-      <div class="right"></div>
-      <div class="top"></div>
-      <div class="bottom"></div>
-    </div>
-    <div class="handle"></div>
-  </div>
-  <div class="scene">
-    <div class="cube">
-      <div class="front"></div>
-      <div class="back"></div>
-      <div class="left"></div>
-      <div class="right"></div>
-      <div class="top"></div>
-      <div class="bottom"></div>
-    </div>
-    <div class="handle"></div>
-  </div>
+  <!-- 4 cubes on the left -->
   <div class="scene">
     <div class="cube">
       <div class="front"></div>
@@ -246,14 +184,14 @@
   <!-- Video Box (bottom-right) -->
   <div class="video-box">
     <video width="100%" height="100%" controls>
-      <source src="./ladoscubo/teste6.mp4" type="video/mp4">
+      <source src="./ladoscubo/teste5.mp4" type="video/mp4">
       Your browser does not support the video tag.
     </video>
   </div>
 
   <!-- Image Box (upper-right) -->
   <div class="image-box">
-    <img src="your-image-url.jpg" alt="Sample Image">
+    <img src="./exemplos/ex6.png" alt="Sample Image">
   </div>
 
   <div class="linkContainer">
@@ -261,8 +199,8 @@
       <img src="./outros/7604747.png" width="11%" alt="próximo">
     </a>
     <a class="link" href="./page4.html">
-      <img src="./outros/7604747.png" width="11%" alt="próximo">
-    </a>
+        <img src="./outros/7604747.png" width="11%" alt="próximo">
+      </a>
   </div>
 
   <script>
