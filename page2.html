@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Cubos</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Movable & Rotatable 3D Cubes</title>
   <style>
     body {
       display: flex;
@@ -15,13 +15,12 @@
       overflow: hidden;
     }
     .scene {
-      width: 100px; /* Smaller width */
-      height: 100px; /* Smaller height */
-      perspective: 400px; /* Adjusted perspective for smaller size */
+      width: 100px;
+      height: 100px;
+      perspective: 400px;
       position: absolute;
       cursor: grab;
     }
-
     .cube {
       width: 100%;
       height: 100%;
@@ -29,78 +28,72 @@
       transform-style: preserve-3d;
       transition: transform 0.1s;
     }
-
     .cube div {
       position: absolute;
-      width: 100px; /* Smaller width */
-      height: 100px; /* Smaller height */
+      width: 100px;
+      height: 100px;
       background-size: cover;
       background-position: center;
     }
-
     .front  { transform: translateZ(50px); background-image: url('./ladoscubo/tdbra.png'); }
     .back   { transform: rotateY(180deg) translateZ(50px); background-image: url('./ladoscubo/tdverm.png'); }
     .left   { transform: rotateY(-90deg) translateZ(50px); background-image: url('./ladoscubo/mm.png'); }
     .right  { transform: rotateY(90deg) translateZ(50px); background-image: url('./ladoscubo/mmop.png'); }
     .top    { transform: rotateX(90deg) translateZ(50px); background-image: url('./ladoscubo/tdbra.png'); }
     .bottom { transform: rotateX(-90deg) translateZ(50px); background-image: url('./ladoscubo/tdverm.png'); }
-
-    .handle {
-      width: 8px; /* Smaller handle */
-      height: 8px; /* Smaller handle */
+    .controls {
       position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      cursor: move;
-      z-index: 10;
-      display: none; /* Initially hidden */
+      top: 0;
+      left: 0;
+      width: 100px;
+      height: 100px;
+      z-index: 100;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.2s ease-in-out;
+    }
+    .scene:hover .controls {
+      opacity: 1;
+      pointer-events: all;
+    }
+    .arrow {
+      font-size: 16px;
+      font-weight: bold;
+      width: 25px;
+      height: 25px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      display: flex;
       align-items: center;
       justify-content: center;
-    }
-
-    .scene:hover .handle {
-      display: flex; /* Show only on hover */
-    }
-
-    .handle::before, .handle::after {
-      content: "";
       position: absolute;
-      background-color: grey;
-      box-shadow: 0px 0px 2px rgba(0, 0, 0, 0.5);
+      z-index: 100;
     }
-
-    .handle::before {
-      width: 8px; /* Smaller handle */
-      height: 2px;
-    }
-
-    .handle::after {
-      width: 2px;
-      height: 8px; /* Smaller handle */
-    }
-
-    /* Positioning for 2 cubes on the left */
-    .scene:nth-child(1) { left: 50px; top: 150px; } /* Top cube on the left */
-    .scene:nth-child(2) { left: 50px; top: 350px; } /* Bottom cube on the left */
-
-    /* Video box at the bottom right */
-    .video-box {
-      position: fixed;
-      bottom: 20px; /* Position at the bottom */
-      right: 20px;  /* Position at the right */
-      width: 200px;
-      height: 200px;
-      background-color: white;
-      border: 2px solid grey;
-      box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
-    }
-
-    /* Image box at the upper right */
+    /* Positioning for the two cubes */
+    #scene1 { left: 50px; top: 150px; }
+    #scene2 { left: 50px; top: 350px; }
+    /* Cube 1 Controls */
+    #up1 { top: -10px; left: 50%; transform: translateX(-50%); }
+    #down1 { bottom: -10px; left: 50%; transform: translateX(-50%); }
+    #left1 { left: -10px; top: 50%; transform: translateY(-50%); }
+    #right1 { right: -10px; top: 50%; transform: translateY(-50%); }
+    /* Diagonal arrows for cube 1 */
+    #topRight1 { top: -10px; right: -10px; } /* Clockwise */
+    #topLeft1  { top: -10px; left: -10px; }  /* Anticlockwise */
+    /* Cube 2 Controls */
+    #up2 { top: -10px; left: 50%; transform: translateX(-50%); }
+    #down2 { bottom: -10px; left: 50%; transform: translateX(-50%); }
+    #left2 { left: -10px; top: 50%; transform: translateY(-50%); }
+    #right2 { right: -10px; top: 50%; transform: translateY(-50%); }
+    /* Diagonal arrows for cube 2 */
+    #topRight2 { top: -10px; right: -10px; } /* Clockwise */
+    #topLeft2  { top: -10px; left: -10px; }  /* Anticlockwise */
+    /* Image box (upper-right) */
     .image-box {
       position: fixed;
-      top: 20px;    /* Position at the top */
-      right: 20px;  /* Position at the right */
+      top: 20px;
+      right: 20px;
       width: 200px;
       height: 200px;
       background-color: white;
@@ -108,34 +101,31 @@
       box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
       overflow: hidden;
     }
-
     .image-box img {
       width: 100%;
       height: 100%;
-      object-fit: cover; /* Ensure the image covers the box without distortion */
+      object-fit: cover;
     }
-
     .linkContainer {
-      position: fixed;  /* Keeps it in place even when scrolling */
-      right: 10px;      /* Places it on the right side */
-      top: 50%;         /* Positions it in the vertical center */
-      transform: translateY(-50%); /* Centers it vertically */
-      padding: 0;       /* Remove unnecessary padding */
-      text-align: right; /* Ensures proper alignment */
-      display: flex;     /* Use flexbox to stack elements vertically */
-      flex-direction: column; /* Stack the buttons vertically */
-      gap: 10px;         /* Adds space between buttons */
+      position: fixed;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      padding: 0;
+      text-align: right;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
     }
-
     .linkContainer .link {
-      display: block; /* Ensures that each link takes full width */
+      display: block;
     }
   </style>
 </head>
 <body>
-  <!-- 2 cubes on the left -->
-  <div class="scene">
-    <div class="cube">
+  <!-- Cube 1 -->
+  <div class="scene" id="scene1">
+    <div class="cube" id="cube1">
       <div class="front"></div>
       <div class="back"></div>
       <div class="left"></div>
@@ -143,26 +133,36 @@
       <div class="top"></div>
       <div class="bottom"></div>
     </div>
-    <div class="handle"></div>
-  </div>
-  <div class="scene">
-    <div class="cube">
-      <div class="front"></div>
-      <div class="back"></div>
-      <div class="left"></div>
-      <div class="right"></div>
-      <div class="top"></div>
-      <div class="bottom"></div>
+    <div class="controls" id="controls1">
+      <button class="arrow" id="left1">⬅</button>
+      <button class="arrow" id="up1">⬆</button>
+      <button class="arrow" id="down1">⬇</button>
+      <button class="arrow" id="right1">➡</button>
+      <!-- Diagonal arrows -->
+      <button class="arrow" id="topRight1">↗</button> <!-- Clockwise -->
+      <button class="arrow" id="topLeft1">↖</button>  <!-- Anticlockwise -->
     </div>
-    <div class="handle"></div>
   </div>
 
-  <!-- Video Box (bottom-right) -->
-  <div class="video-box">
-    <video width="100%" height="100%" controls>
-      <source src="./videos/c2.mp4" type="video/mp4">
-      Your browser does not support the video tag.
-    </video>
+  <!-- Cube 2 -->
+  <div class="scene" id="scene2">
+    <div class="cube" id="cube2">
+      <div class="front"></div>
+      <div class="back"></div>
+      <div class="left"></div>
+      <div class="right"></div>
+      <div class="top"></div>
+      <div class="bottom"></div>
+    </div>
+    <div class="controls" id="controls2">
+      <button class="arrow" id="left2">⬅</button>
+      <button class="arrow" id="up2">⬆</button>
+      <button class="arrow" id="down2">⬇</button>
+      <button class="arrow" id="right2">➡</button>
+      <!-- Diagonal arrows -->
+      <button class="arrow" id="topRight2">↗</button> <!-- Clockwise -->
+      <button class="arrow" id="topLeft2">↖</button>  <!-- Anticlockwise -->
+    </div>
   </div>
 
   <!-- Image Box (upper-right) -->
@@ -171,21 +171,139 @@
   </div>
 
   <div class="linkContainer">
-    <a class="link" href="./page6.html">
+    <a class="link" href="./video6.html">
       <img src="./outros/7604747.png" width="11%" alt="próximo">
     </a>
-    <a class="link" href="./page1.html">
-        <img src="./outros/7604747.png" width="11%" alt="próximo">
-      </a>
+    <a class="link" href="./video1.html">
+      <img src="./outros/7604747.png" width="11%" alt="próximo">
+    </a>
   </div>
 
   <script>
-    // Function to initialize the random face visibility without rotating the cube
+    // Cube 1 variables
+    let cube1 = document.getElementById('cube1');
+    let scene1 = document.getElementById('scene1');
+    let rotationX1 = 0, rotationY1 = 0, sceneRotation1 = 0;
+    let isDragging1 = false, offsetX1 = 0, offsetY1 = 0, lastX1 = 0, lastY1 = 0;
+
+    // Cube 2 variables
+    let cube2 = document.getElementById('cube2');
+    let scene2 = document.getElementById('scene2');
+    let rotationX2 = 0, rotationY2 = 0, sceneRotation2 = 0;
+    let isDragging2 = false, offsetX2 = 0, offsetY2 = 0, lastX2 = 0, lastY2 = 0;
+
+    // Update cube rotation using template literals
+    function updateCubeRotation(cube, rotationX, rotationY) {
+      cube.style.transform = `rotateX(${rotationX}deg) rotateY(${rotationY}deg)`;
+    }
+
+    // Update the scene's transform (combining translation and rotation)
+    function updateSceneTransform(scene, offsetX, offsetY, sceneRotation) {
+      scene.style.transform = `translate(${offsetX}px, ${offsetY}px) rotate(${sceneRotation}deg)`;
+    }
+
+    // Drag functionality for Cube 1 and Cube 2
+    scene1.addEventListener('mousedown', (e) => {
+      isDragging1 = true;
+      lastX1 = e.clientX;
+      lastY1 = e.clientY;
+      scene1.style.cursor = 'grabbing';
+      scene1.style.transition = 'none';
+    });
+    scene2.addEventListener('mousedown', (e) => {
+      isDragging2 = true;
+      lastX2 = e.clientX;
+      lastY2 = e.clientY;
+      scene2.style.cursor = 'grabbing';
+      scene2.style.transition = 'none';
+    });
+
+    document.addEventListener('mousemove', (e) => {
+      if (isDragging1) {
+        let deltaX = e.clientX - lastX1;
+        let deltaY = e.clientY - lastY1;
+        offsetX1 += deltaX;
+        offsetY1 += deltaY;
+        updateSceneTransform(scene1, offsetX1, offsetY1, sceneRotation1);
+        lastX1 = e.clientX;
+        lastY1 = e.clientY;
+      }
+      if (isDragging2) {
+        let deltaX = e.clientX - lastX2;
+        let deltaY = e.clientY - lastY2;
+        offsetX2 += deltaX;
+        offsetY2 += deltaY;
+        updateSceneTransform(scene2, offsetX2, offsetY2, sceneRotation2);
+        lastX2 = e.clientX;
+        lastY2 = e.clientY;
+      }
+    });
+
+    document.addEventListener('mouseup', () => {
+      isDragging1 = false;
+      isDragging2 = false;
+      scene1.style.cursor = 'grab';
+      scene2.style.cursor = 'grab';
+      scene1.style.transition = 'transform 0.3s ease-in-out';
+      scene2.style.transition = 'transform 0.3s ease-in-out';
+    });
+
+    // Cube 1 Controls
+    document.getElementById('left1').addEventListener('click', () => {
+      rotationY1 -= 90;
+      updateCubeRotation(cube1, rotationX1, rotationY1);
+    });
+    document.getElementById('right1').addEventListener('click', () => {
+      rotationY1 += 90;
+      updateCubeRotation(cube1, rotationX1, rotationY1);
+    });
+    document.getElementById('up1').addEventListener('click', () => {
+      rotationX1 -= 90;
+      updateCubeRotation(cube1, rotationX1, rotationY1);
+    });
+    document.getElementById('down1').addEventListener('click', () => {
+      rotationX1 += 90;
+      updateCubeRotation(cube1, rotationX1, rotationY1);
+    });
+    document.getElementById('topRight1').addEventListener('click', () => {
+      sceneRotation1 += 45; // Clockwise rotation
+      updateSceneTransform(scene1, offsetX1, offsetY1, sceneRotation1);
+    });
+    document.getElementById('topLeft1').addEventListener('click', () => {
+      sceneRotation1 -= 45; // Anticlockwise rotation
+      updateSceneTransform(scene1, offsetX1, offsetY1, sceneRotation1);
+    });
+
+    // Cube 2 Controls
+    document.getElementById('left2').addEventListener('click', () => {
+      rotationY2 -= 90;
+      updateCubeRotation(cube2, rotationX2, rotationY2);
+    });
+    document.getElementById('right2').addEventListener('click', () => {
+      rotationY2 += 90;
+      updateCubeRotation(cube2, rotationX2, rotationY2);
+    });
+    document.getElementById('up2').addEventListener('click', () => {
+      rotationX2 -= 90;
+      updateCubeRotation(cube2, rotationX2, rotationY2);
+    });
+    document.getElementById('down2').addEventListener('click', () => {
+      rotationX2 += 90;
+      updateCubeRotation(cube2, rotationX2, rotationY2);
+    });
+    document.getElementById('topRight2').addEventListener('click', () => {
+      sceneRotation2 += 45; // Clockwise rotation
+      updateSceneTransform(scene2, offsetX2, offsetY2, sceneRotation2);
+    });
+    document.getElementById('topLeft2').addEventListener('click', () => {
+      sceneRotation2 -= 45; // Anticlockwise rotation
+      updateSceneTransform(scene2, offsetX2, offsetY2, sceneRotation2);
+    });
+
+    // Initialize each cube with a random face visible
     function randomizeCubeVisibleFace(cube) {
       const faces = ['front', 'back', 'left', 'right', 'top', 'bottom'];
       const randomFace = faces[Math.floor(Math.random() * faces.length)];
-
-      // Apply rotation to make the chosen face visible
       switch(randomFace) {
         case 'front':
           cube.style.transform = "rotateX(0deg) rotateY(0deg)";
@@ -208,62 +326,8 @@
       }
     }
 
-    // Initialize each cube with a random face visible
     document.querySelectorAll('.cube').forEach(cube => {
       randomizeCubeVisibleFace(cube);
-    });
-
-    // Rotate the cubes on drag
-    let scenes = document.querySelectorAll('.scene');
-    scenes.forEach(scene => {
-      let cube = scene.querySelector('.cube');
-      let handle = scene.querySelector('.handle');
-
-      let isRotating = false, isMoving = false;
-      let lastX, lastY;
-      let rotationX = 0, rotationY = 0;
-      let sceneX = scene.offsetLeft, sceneY = scene.offsetTop;
-
-      cube.addEventListener("mousedown", (e) => {
-        if (e.target === handle) return;
-        isRotating = true;
-        lastX = e.clientX;
-        lastY = e.clientY;
-      });
-
-      handle.addEventListener("mousedown", (e) => {
-        isMoving = true;
-        lastX = e.clientX;
-        lastY = e.clientY;
-        e.stopPropagation();
-      });
-
-      document.addEventListener("mousemove", (e) => {
-        if (isRotating) {
-          let deltaX = e.clientX - lastX;
-          let deltaY = e.clientY - lastY;
-          rotationY += deltaX * 0.5;
-          rotationX -= deltaY * 0.5;
-          cube.style.transform = `rotateX(${rotationX}deg) rotateY(${rotationY}deg)`;
-        }
-
-        if (isMoving) {
-          let deltaX = e.clientX - lastX;
-          let deltaY = e.clientY - lastY;
-          sceneX += deltaX;
-          sceneY += deltaY;
-          scene.style.left = `${sceneX}px`;
-          scene.style.top = `${sceneY}px`;
-        }
-
-        lastX = e.clientX;
-        lastY = e.clientY;
-      });
-
-      document.addEventListener("mouseup", () => {
-        isRotating = false;
-        isMoving = false;
-      });
     });
   </script>
 </body>
