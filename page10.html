@@ -108,17 +108,25 @@
     /* Next page link container */
     .linkContainer {
       position: fixed;
-      right: 20px;
+      right: 10px;
       top: 50%;
       transform: translateY(-50%);
+      padding: 0;
+      text-align: right;
       display: flex;
       flex-direction: column;
       gap: 10px;
-      z-index: 1000;
     }
     .linkContainer .link {
-      display: block;
-      text-align: right;
+      display: inline-block; /* Ensures anchor wraps only around the image */
+      padding: 0;
+      margin: 0;
+      border: none;
+    }
+    .linkContainer .link img {
+      display: block; /* Removes extra inline spacing */
+      width: 50px; /* Adjust to match the correct size */
+      height: auto; /* Maintain aspect ratio */
     }
   </style>
 </head>
