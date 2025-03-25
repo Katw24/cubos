@@ -18,17 +18,17 @@
       perspective: 400px;
       position: absolute;
       cursor: grab;
-      transform-origin: top left;
+      transform-origin: center;
     }
-    .scene:nth-child(1) { left: 25px; top: 150px; }                
-    .scene:nth-child(2) { left: 25px; top: 50%; transform: translateY(-50%); }   
-    .scene:nth-child(3) { left: 25px; bottom: 150px; }            
-    .scene:nth-child(4) { left: 200px; top: 25px; }                
-    .scene:nth-child(5) { left: 350px; top: 25px; }                
-    .scene:nth-child(6) { left: 500px; top: 25px; }                
-    .scene:nth-child(7) { left: 200px; bottom: 25px; }             
-    .scene:nth-child(8) { left: 350px; bottom: 25px; }             
-    .scene:nth-child(9) { left: 500px; bottom: 25px; }
+#scene1 { left: 25px; top: 150px; }
+#scene2 { left: 25px; top: calc(50% - 50px); }
+#scene3 { left: 25px; bottom: 150px; }
+#scene4 { left: 200px; top: 25px; }
+#scene5 { left: 350px; top: 25px; }
+#scene6 { left: 500px; top: 25px; }
+#scene7 { left: 200px; bottom: 25px; }
+#scene8 { left: 350px; bottom: 25px; }
+#scene9 { left: 500px; bottom: 25px; }
 
     .cube {
       width: 100%;
@@ -151,7 +151,6 @@
   <div class="magnetic-point" style="left: 650px; top: 480px;"></div>
   <div class="magnetic-point" style="left: 765px; top: 480px;"></div>
   <div class="magnetic-point" style="left: 881px; top: 480px;"></div>
-
 
   <!-- Nine Scenes (each containing one cube and its controls) -->
   <div class="scene" id="scene1">
@@ -344,12 +343,15 @@
     }
     
     function updateSceneTransform(scene, offsetX, offsetY, sceneRotation) {
-  const initialX = parseInt(scene.style.left, 10) || 0;
-  const initialY = parseInt(scene.style.top, 10) || 0;
-
-  scene.style.transform = `translate(${initialX + offsetX}px, ${initialY + offsetY}px) rotate(${sceneRotation}deg)`;
-}
-
+      // Get the initial position from the CSS (without transforms)
+      const initialLeft = getComputedStyle(scene).left;
+      const initialTop = getComputedStyle(scene).top;
+      
+      // Apply the transform while maintaining the initial position
+      scene.style.transform = `translate(${offsetX}px, ${offsetY}px) rotate(${sceneRotation}deg)`;
+      scene.style.left = initialLeft;
+      scene.style.top = initialTop;
+    }
     
     // Magnetic snapping function
     function checkMagnetism(scene, currentOffsetX, currentOffsetY, sceneRotation, callback) {
