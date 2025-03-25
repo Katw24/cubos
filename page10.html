@@ -18,17 +18,17 @@
       perspective: 400px;
       position: absolute;
       cursor: grab;
+      transform-origin: top left;
     }
-    /* Position the nine cubes using nth-child selectors */
-    .scene:nth-child(1) { left: 25px; top: 150px; }               /* Top cube on the left */
-    .scene:nth-child(2) { left: 25px; top: 50%; transform: translateY(-50%); } /* Middle cube on the left */
-    .scene:nth-child(3) { left: 25px; bottom: 150px; }             /* Bottom cube on the left */
-    .scene:nth-child(4) { left: 200px; top: 25px; }                 /* Left cube at the top */
-    .scene:nth-child(5) { left: 350px; top: 25px; }                 /* Middle cube at the top */
-    .scene:nth-child(6) { left: 500px; top: 25px; }                 /* Right cube at the top */
-    .scene:nth-child(7) { left: 200px; bottom: 25px; }              /* Left cube at the bottom */
-    .scene:nth-child(8) { left: 350px; bottom: 25px; }              /* Middle cube at the bottom */
-    .scene:nth-child(9) { left: 500px; bottom: 25px; }              /* Right cube at the bottom */
+    .scene:nth-child(1) { left: 25px; top: 150px; }                
+    .scene:nth-child(2) { left: 25px; top: 50%; transform: translateY(-50%); }   
+    .scene:nth-child(3) { left: 25px; bottom: 150px; }            
+    .scene:nth-child(4) { left: 200px; top: 25px; }                
+    .scene:nth-child(5) { left: 350px; top: 25px; }                
+    .scene:nth-child(6) { left: 500px; top: 25px; }                
+    .scene:nth-child(7) { left: 200px; bottom: 25px; }             
+    .scene:nth-child(8) { left: 350px; bottom: 25px; }             
+    .scene:nth-child(9) { left: 500px; bottom: 25px; }
 
     .cube {
       width: 100%;
@@ -128,9 +128,31 @@
       width: 50px; /* Adjust to match the correct size */
       height: auto; /* Maintain aspect ratio */
     }
+    
+    /* Magnetic points styling */
+    .magnetic-point {
+      width: 20px;
+      height: 20px;
+      background-color: rgba(0,0,0,0.3); /* Semi-transparent for visibility */
+      border-radius: 50%;
+      position: absolute;
+      pointer-events: none;
+    }
   </style>
 </head>
 <body>
+  <!-- Magnetic Points - positioned away from original cube positions -->
+  <div class="magnetic-point" style="left: 650px; top: 250px;"></div>
+  <div class="magnetic-point" style="left: 765px; top: 250px;"></div>
+  <div class="magnetic-point" style="left: 881px; top: 250px;"></div>
+  <div class="magnetic-point" style="left: 650px; top: 365px;"></div>
+  <div class="magnetic-point" style="left: 765px; top: 365px;"></div>
+  <div class="magnetic-point" style="left: 881px; top: 365px;"></div>
+  <div class="magnetic-point" style="left: 650px; top: 480px;"></div>
+  <div class="magnetic-point" style="left: 765px; top: 480px;"></div>
+  <div class="magnetic-point" style="left: 881px; top: 480px;"></div>
+
+
   <!-- Nine Scenes (each containing one cube and its controls) -->
   <div class="scene" id="scene1">
     <div class="cube" id="cube1">
@@ -320,486 +342,275 @@
     function updateCubeRotation(cube, rotationX, rotationY) {
       cube.style.transform = `rotateX(${rotationX}deg) rotateY(${rotationY}deg)`;
     }
+    
     function updateSceneTransform(scene, offsetX, offsetY, sceneRotation) {
-      scene.style.transform = `translate(${offsetX}px, ${offsetY}px) rotate(${sceneRotation}deg)`;
+  const initialX = parseInt(scene.style.left, 10) || 0;
+  const initialY = parseInt(scene.style.top, 10) || 0;
+
+  scene.style.transform = `translate(${initialX + offsetX}px, ${initialY + offsetY}px) rotate(${sceneRotation}deg)`;
+}
+
+    
+    // Magnetic snapping function
+    function checkMagnetism(scene, currentOffsetX, currentOffsetY, sceneRotation, callback) {
+      const proximityThreshold = 100;
+      const sceneRect = scene.getBoundingClientRect();
+      const sceneCenterX = sceneRect.left + sceneRect.width / 2;
+      const sceneCenterY = sceneRect.top + sceneRect.height / 2;
+
+      document.querySelectorAll('.magnetic-point').forEach(point => {
+        const pointRect = point.getBoundingClientRect();
+        const pointCenterX = pointRect.left + pointRect.width / 2;
+        const pointCenterY = pointRect.top + pointRect.height / 2;
+
+        const distance = Math.sqrt(
+          Math.pow(sceneCenterX - pointCenterX, 2) +
+          Math.pow(sceneCenterY - pointCenterY, 2)
+        );
+
+        if (distance < proximityThreshold) {
+          const newOffsetX = currentOffsetX + (pointCenterX - sceneCenterX);
+          const newOffsetY = currentOffsetY + (pointCenterY - sceneCenterY);
+          
+          scene.style.transition = 'transform 0.3s ease-out';
+          updateSceneTransform(scene, newOffsetX, newOffsetY, sceneRotation);
+          
+          if (callback) callback(newOffsetX, newOffsetY);
+          return;
+        }
+      });
     }
-    
-    // --- Cube 1 ---
-    let cube1 = document.getElementById('cube1');
-    let scene1 = document.getElementById('scene1');
-    let rotationX1 = 0, rotationY1 = 0, sceneRotation1 = 0;
-    let isDragging1 = false, offsetX1 = 0, offsetY1 = 0, lastX1 = 0, lastY1 = 0;
-    // --- Cube 2 ---
-    let cube2 = document.getElementById('cube2');
-    let scene2 = document.getElementById('scene2');
-    let rotationX2 = 0, rotationY2 = 0, sceneRotation2 = 0;
-    let isDragging2 = false, offsetX2 = 0, offsetY2 = 0, lastX2 = 0, lastY2 = 0;
-    // --- Cube 3 ---
-    let cube3 = document.getElementById('cube3');
-    let scene3 = document.getElementById('scene3');
-    let rotationX3 = 0, rotationY3 = 0, sceneRotation3 = 0;
-    let isDragging3 = false, offsetX3 = 0, offsetY3 = 0, lastX3 = 0, lastY3 = 0;
-    // --- Cube 4 ---
-    let cube4 = document.getElementById('cube4');
-    let scene4 = document.getElementById('scene4');
-    let rotationX4 = 0, rotationY4 = 0, sceneRotation4 = 0;
-    let isDragging4 = false, offsetX4 = 0, offsetY4 = 0, lastX4 = 0, lastY4 = 0;
-    // --- Cube 5 ---
-    let cube5 = document.getElementById('cube5');
-    let scene5 = document.getElementById('scene5');
-    let rotationX5 = 0, rotationY5 = 0, sceneRotation5 = 0;
-    let isDragging5 = false, offsetX5 = 0, offsetY5 = 0, lastX5 = 0, lastY5 = 0;
-    // --- Cube 6 ---
-    let cube6 = document.getElementById('cube6');
-    let scene6 = document.getElementById('scene6');
-    let rotationX6 = 0, rotationY6 = 0, sceneRotation6 = 0;
-    let isDragging6 = false, offsetX6 = 0, offsetY6 = 0, lastX6 = 0, lastY6 = 0;
-    // --- Cube 7 ---
-    let cube7 = document.getElementById('cube7');
-    let scene7 = document.getElementById('scene7');
-    let rotationX7 = 0, rotationY7 = 0, sceneRotation7 = 0;
-    let isDragging7 = false, offsetX7 = 0, offsetY7 = 0, lastX7 = 0, lastY7 = 0;
-    // --- Cube 8 ---
-    let cube8 = document.getElementById('cube8');
-    let scene8 = document.getElementById('scene8');
-    let rotationX8 = 0, rotationY8 = 0, sceneRotation8 = 0;
-    let isDragging8 = false, offsetX8 = 0, offsetY8 = 0, lastX8 = 0, lastY8 = 0;
-    // --- Cube 9 ---
-    let cube9 = document.getElementById('cube9');
-    let scene9 = document.getElementById('scene9');
-    let rotationX9 = 0, rotationY9 = 0, sceneRotation9 = 0;
-    let isDragging9 = false, offsetX9 = 0, offsetY9 = 0, lastX9 = 0, lastY9 = 0;
-    
-    // Drag functionality for each scene
-    scene1.addEventListener('mousedown', (e) => {
-      isDragging1 = true;
-      lastX1 = e.clientX;
-      lastY1 = e.clientY;
-      scene1.style.cursor = 'grabbing';
-      scene1.style.transition = 'none';
-    });
-    scene2.addEventListener('mousedown', (e) => {
-      isDragging2 = true;
-      lastX2 = e.clientX;
-      lastY2 = e.clientY;
-      scene2.style.cursor = 'grabbing';
-      scene2.style.transition = 'none';
-    });
-    scene3.addEventListener('mousedown', (e) => {
-      isDragging3 = true;
-      lastX3 = e.clientX;
-      lastY3 = e.clientY;
-      scene3.style.cursor = 'grabbing';
-      scene3.style.transition = 'none';
-    });
-    scene4.addEventListener('mousedown', (e) => {
-      isDragging4 = true;
-      lastX4 = e.clientX;
-      lastY4 = e.clientY;
-      scene4.style.cursor = 'grabbing';
-      scene4.style.transition = 'none';
-    });
-    scene5.addEventListener('mousedown', (e) => {
-      isDragging5 = true;
-      lastX5 = e.clientX;
-      lastY5 = e.clientY;
-      scene5.style.cursor = 'grabbing';
-      scene5.style.transition = 'none';
-    });
-    scene6.addEventListener('mousedown', (e) => {
-      isDragging6 = true;
-      lastX6 = e.clientX;
-      lastY6 = e.clientY;
-      scene6.style.cursor = 'grabbing';
-      scene6.style.transition = 'none';
-    });
-    scene7.addEventListener('mousedown', (e) => {
-      isDragging7 = true;
-      lastX7 = e.clientX;
-      lastY7 = e.clientY;
-      scene7.style.cursor = 'grabbing';
-      scene7.style.transition = 'none';
-    });
-    scene8.addEventListener('mousedown', (e) => {
-      isDragging8 = true;
-      lastX8 = e.clientX;
-      lastY8 = e.clientY;
-      scene8.style.cursor = 'grabbing';
-      scene8.style.transition = 'none';
-    });
-    scene9.addEventListener('mousedown', (e) => {
-      isDragging9 = true;
-      lastX9 = e.clientX;
-      lastY9 = e.clientY;
-      scene9.style.cursor = 'grabbing';
-      scene9.style.transition = 'none';
-    });
-    
+
+    // Cube management class
+    class CubeManager {
+      constructor(sceneId, cubeId) {
+        this.scene = document.getElementById(sceneId);
+        this.cube = document.getElementById(cubeId);
+        this.rotationX = 0;
+        this.rotationY = 0;
+        this.sceneRotation = 0;
+        this.offsetX = 0;
+        this.offsetY = 0;
+        this.isDragging = false;
+        this.lastX = 0;
+        this.lastY = 0;
+        
+        this.init();
+      }
+      
+      init() {
+        this.scene.addEventListener('mousedown', (e) => {
+          this.isDragging = true;
+          this.lastX = e.clientX;
+          this.lastY = e.clientY;
+          this.scene.style.cursor = 'grabbing';
+          this.scene.style.transition = 'none';
+          e.preventDefault();
+        });
+        
+        this.randomizeCubeVisibleFace();
+      }
+      
+      handleMouseMove(e) {
+        if (!this.isDragging) return;
+        
+        const deltaX = e.clientX - this.lastX;
+        const deltaY = e.clientY - this.lastY;
+        this.offsetX += deltaX;
+        this.offsetY += deltaY;
+        
+        updateSceneTransform(this.scene, this.offsetX, this.offsetY, this.sceneRotation);
+        
+        this.lastX = e.clientX;
+        this.lastY = e.clientY;
+      }
+      
+      handleMouseUp() {
+        if (!this.isDragging) return;
+        
+        this.isDragging = false;
+        this.scene.style.cursor = 'grab';
+        
+        checkMagnetism(
+          this.scene, 
+          this.offsetX, 
+          this.offsetY, 
+          this.sceneRotation, 
+          (newX, newY) => {
+            this.offsetX = newX;
+            this.offsetY = newY;
+          }
+        );
+        
+        setTimeout(() => {
+          this.scene.style.transition = 'transform 0.3s ease-in-out';
+        }, 10);
+      }
+      
+      rotateLeft() {
+        this.rotationY -= 90;
+        updateCubeRotation(this.cube, this.rotationX, this.rotationY);
+      }
+      
+      rotateRight() {
+        this.rotationY += 90;
+        updateCubeRotation(this.cube, this.rotationX, this.rotationY);
+      }
+      
+      rotateUp() {
+        this.rotationX -= 90;
+        updateCubeRotation(this.cube, this.rotationX, this.rotationY);
+      }
+      
+      rotateDown() {
+        this.rotationX += 90;
+        updateCubeRotation(this.cube, this.rotationX, this.rotationY);
+      }
+      
+      rotateSceneClockwise() {
+        this.sceneRotation += 45;
+        updateSceneTransform(this.scene, this.offsetX, this.offsetY, this.sceneRotation);
+      }
+      
+      rotateSceneCounterClockwise() {
+        this.sceneRotation -= 45;
+        updateSceneTransform(this.scene, this.offsetX, this.offsetY, this.sceneRotation);
+      }
+      
+      randomizeCubeVisibleFace() {
+        const faces = ['front', 'back', 'left', 'right', 'top', 'bottom'];
+        const randomFace = faces[Math.floor(Math.random() * faces.length)];
+        switch(randomFace) {
+          case 'front':
+            this.cube.style.transform = "rotateX(0deg) rotateY(0deg)";
+            break;
+          case 'back':
+            this.cube.style.transform = "rotateX(0deg) rotateY(180deg)";
+            break;
+          case 'left':
+            this.cube.style.transform = "rotateX(0deg) rotateY(-90deg)";
+            break;
+          case 'right':
+            this.cube.style.transform = "rotateX(0deg) rotateY(90deg)";
+            break;
+          case 'top':
+            this.cube.style.transform = "rotateX(90deg) rotateY(0deg)";
+            break;
+          case 'bottom':
+            this.cube.style.transform = "rotateX(-90deg) rotateY(0deg)";
+            break;
+        }
+      }
+    }
+
+    // Create cube managers for all 9 cubes
+    const cube1Manager = new CubeManager('scene1', 'cube1');
+    const cube2Manager = new CubeManager('scene2', 'cube2');
+    const cube3Manager = new CubeManager('scene3', 'cube3');
+    const cube4Manager = new CubeManager('scene4', 'cube4');
+    const cube5Manager = new CubeManager('scene5', 'cube5');
+    const cube6Manager = new CubeManager('scene6', 'cube6');
+    const cube7Manager = new CubeManager('scene7', 'cube7');
+    const cube8Manager = new CubeManager('scene8', 'cube8');
+    const cube9Manager = new CubeManager('scene9', 'cube9');
+
+    // Set up event listeners for mouse movements
     document.addEventListener('mousemove', (e) => {
-      if (isDragging1) {
-        let deltaX = e.clientX - lastX1;
-        let deltaY = e.clientY - lastY1;
-        offsetX1 += deltaX;
-        offsetY1 += deltaY;
-        updateSceneTransform(scene1, offsetX1, offsetY1, sceneRotation1);
-        lastX1 = e.clientX;
-        lastY1 = e.clientY;
-      }
-      if (isDragging2) {
-        let deltaX = e.clientX - lastX2;
-        let deltaY = e.clientY - lastY2;
-        offsetX2 += deltaX;
-        offsetY2 += deltaY;
-        updateSceneTransform(scene2, offsetX2, offsetY2, sceneRotation2);
-        lastX2 = e.clientX;
-        lastY2 = e.clientY;
-      }
-      if (isDragging3) {
-        let deltaX = e.clientX - lastX3;
-        let deltaY = e.clientY - lastY3;
-        offsetX3 += deltaX;
-        offsetY3 += deltaY;
-        updateSceneTransform(scene3, offsetX3, offsetY3, sceneRotation3);
-        lastX3 = e.clientX;
-        lastY3 = e.clientY;
-      }
-      if (isDragging4) {
-        let deltaX = e.clientX - lastX4;
-        let deltaY = e.clientY - lastY4;
-        offsetX4 += deltaX;
-        offsetY4 += deltaY;
-        updateSceneTransform(scene4, offsetX4, offsetY4, sceneRotation4);
-        lastX4 = e.clientX;
-        lastY4 = e.clientY;
-      }
-      if (isDragging5) {
-        let deltaX = e.clientX - lastX5;
-        let deltaY = e.clientY - lastY5;
-        offsetX5 += deltaX;
-        offsetY5 += deltaY;
-        updateSceneTransform(scene5, offsetX5, offsetY5, sceneRotation5);
-        lastX5 = e.clientX;
-        lastY5 = e.clientY;
-      }
-      if (isDragging6) {
-        let deltaX = e.clientX - lastX6;
-        let deltaY = e.clientY - lastY6;
-        offsetX6 += deltaX;
-        offsetY6 += deltaY;
-        updateSceneTransform(scene6, offsetX6, offsetY6, sceneRotation6);
-        lastX6 = e.clientX;
-        lastY6 = e.clientY;
-      }
-      if (isDragging7) {
-        let deltaX = e.clientX - lastX7;
-        let deltaY = e.clientY - lastY7;
-        offsetX7 += deltaX;
-        offsetY7 += deltaY;
-        updateSceneTransform(scene7, offsetX7, offsetY7, sceneRotation7);
-        lastX7 = e.clientX;
-        lastY7 = e.clientY;
-      }
-      if (isDragging8) {
-        let deltaX = e.clientX - lastX8;
-        let deltaY = e.clientY - lastY8;
-        offsetX8 += deltaX;
-        offsetY8 += deltaY;
-        updateSceneTransform(scene8, offsetX8, offsetY8, sceneRotation8);
-        lastX8 = e.clientX;
-        lastY8 = e.clientY;
-      }
-      if (isDragging9) {
-        let deltaX = e.clientX - lastX9;
-        let deltaY = e.clientY - lastY9;
-        offsetX9 += deltaX;
-        offsetY9 += deltaY;
-        updateSceneTransform(scene9, offsetX9, offsetY9, sceneRotation9);
-        lastX9 = e.clientX;
-        lastY9 = e.clientY;
-      }
+      cube1Manager.handleMouseMove(e);
+      cube2Manager.handleMouseMove(e);
+      cube3Manager.handleMouseMove(e);
+      cube4Manager.handleMouseMove(e);
+      cube5Manager.handleMouseMove(e);
+      cube6Manager.handleMouseMove(e);
+      cube7Manager.handleMouseMove(e);
+      cube8Manager.handleMouseMove(e);
+      cube9Manager.handleMouseMove(e);
     });
-    
+
     document.addEventListener('mouseup', () => {
-      isDragging1 = false; isDragging2 = false; isDragging3 = false;
-      isDragging4 = false; isDragging5 = false; isDragging6 = false;
-      isDragging7 = false; isDragging8 = false; isDragging9 = false;
-      scene1.style.cursor = 'grab'; scene2.style.cursor = 'grab'; scene3.style.cursor = 'grab';
-      scene4.style.cursor = 'grab'; scene5.style.cursor = 'grab'; scene6.style.cursor = 'grab';
-      scene7.style.cursor = 'grab'; scene8.style.cursor = 'grab'; scene9.style.cursor = 'grab';
-      scene1.style.transition = 'transform 0.3s ease-in-out';
-      scene2.style.transition = 'transform 0.3s ease-in-out';
-      scene3.style.transition = 'transform 0.3s ease-in-out';
-      scene4.style.transition = 'transform 0.3s ease-in-out';
-      scene5.style.transition = 'transform 0.3s ease-in-out';
-      scene6.style.transition = 'transform 0.3s ease-in-out';
-      scene7.style.transition = 'transform 0.3s ease-in-out';
-      scene8.style.transition = 'transform 0.3s ease-in-out';
-      scene9.style.transition = 'transform 0.3s ease-in-out';
+      cube1Manager.handleMouseUp();
+      cube2Manager.handleMouseUp();
+      cube3Manager.handleMouseUp();
+      cube4Manager.handleMouseUp();
+      cube5Manager.handleMouseUp();
+      cube6Manager.handleMouseUp();
+      cube7Manager.handleMouseUp();
+      cube8Manager.handleMouseUp();
+      cube9Manager.handleMouseUp();
     });
-    
+
+    // Set up control buttons for all cubes
     // Cube 1 Controls
-    document.getElementById('left1').addEventListener('click', () => {
-      rotationY1 -= 90;
-      updateCubeRotation(cube1, rotationX1, rotationY1);
-    });
-    document.getElementById('right1').addEventListener('click', () => {
-      rotationY1 += 90;
-      updateCubeRotation(cube1, rotationX1, rotationY1);
-    });
-    document.getElementById('up1').addEventListener('click', () => {
-      rotationX1 -= 90;
-      updateCubeRotation(cube1, rotationX1, rotationY1);
-    });
-    document.getElementById('down1').addEventListener('click', () => {
-      rotationX1 += 90;
-      updateCubeRotation(cube1, rotationX1, rotationY1);
-    });
-    document.getElementById('topRight1').addEventListener('click', () => {
-      sceneRotation1 += 45;
-      updateSceneTransform(scene1, offsetX1, offsetY1, sceneRotation1);
-    });
-    document.getElementById('topLeft1').addEventListener('click', () => {
-      sceneRotation1 -= 45;
-      updateSceneTransform(scene1, offsetX1, offsetY1, sceneRotation1);
-    });
+    document.getElementById('left1').addEventListener('click', () => cube1Manager.rotateLeft());
+    document.getElementById('right1').addEventListener('click', () => cube1Manager.rotateRight());
+    document.getElementById('up1').addEventListener('click', () => cube1Manager.rotateUp());
+    document.getElementById('down1').addEventListener('click', () => cube1Manager.rotateDown());
+    document.getElementById('topRight1').addEventListener('click', () => cube1Manager.rotateSceneClockwise());
+    document.getElementById('topLeft1').addEventListener('click', () => cube1Manager.rotateSceneCounterClockwise());
     
     // Cube 2 Controls
-    document.getElementById('left2').addEventListener('click', () => {
-      rotationY2 -= 90;
-      updateCubeRotation(cube2, rotationX2, rotationY2);
-    });
-    document.getElementById('right2').addEventListener('click', () => {
-      rotationY2 += 90;
-      updateCubeRotation(cube2, rotationX2, rotationY2);
-    });
-    document.getElementById('up2').addEventListener('click', () => {
-      rotationX2 -= 90;
-      updateCubeRotation(cube2, rotationX2, rotationY2);
-    });
-    document.getElementById('down2').addEventListener('click', () => {
-      rotationX2 += 90;
-      updateCubeRotation(cube2, rotationX2, rotationY2);
-    });
-    document.getElementById('topRight2').addEventListener('click', () => {
-      sceneRotation2 += 45;
-      updateSceneTransform(scene2, offsetX2, offsetY2, sceneRotation2);
-    });
-    document.getElementById('topLeft2').addEventListener('click', () => {
-      sceneRotation2 -= 45;
-      updateSceneTransform(scene2, offsetX2, offsetY2, sceneRotation2);
-    });
+    document.getElementById('left2').addEventListener('click', () => cube2Manager.rotateLeft());
+    document.getElementById('right2').addEventListener('click', () => cube2Manager.rotateRight());
+    document.getElementById('up2').addEventListener('click', () => cube2Manager.rotateUp());
+    document.getElementById('down2').addEventListener('click', () => cube2Manager.rotateDown());
+    document.getElementById('topRight2').addEventListener('click', () => cube2Manager.rotateSceneClockwise());
+    document.getElementById('topLeft2').addEventListener('click', () => cube2Manager.rotateSceneCounterClockwise());
     
     // Cube 3 Controls
-    document.getElementById('left3').addEventListener('click', () => {
-      rotationY3 -= 90;
-      updateCubeRotation(cube3, rotationX3, rotationY3);
-    });
-    document.getElementById('right3').addEventListener('click', () => {
-      rotationY3 += 90;
-      updateCubeRotation(cube3, rotationX3, rotationY3);
-    });
-    document.getElementById('up3').addEventListener('click', () => {
-      rotationX3 -= 90;
-      updateCubeRotation(cube3, rotationX3, rotationY3);
-    });
-    document.getElementById('down3').addEventListener('click', () => {
-      rotationX3 += 90;
-      updateCubeRotation(cube3, rotationX3, rotationY3);
-    });
-    document.getElementById('topRight3').addEventListener('click', () => {
-      sceneRotation3 += 45;
-      updateSceneTransform(scene3, offsetX3, offsetY3, sceneRotation3);
-    });
-    document.getElementById('topLeft3').addEventListener('click', () => {
-      sceneRotation3 -= 45;
-      updateSceneTransform(scene3, offsetX3, offsetY3, sceneRotation3);
-    });
+    document.getElementById('left3').addEventListener('click', () => cube3Manager.rotateLeft());
+    document.getElementById('right3').addEventListener('click', () => cube3Manager.rotateRight());
+    document.getElementById('up3').addEventListener('click', () => cube3Manager.rotateUp());
+    document.getElementById('down3').addEventListener('click', () => cube3Manager.rotateDown());
+    document.getElementById('topRight3').addEventListener('click', () => cube3Manager.rotateSceneClockwise());
+    document.getElementById('topLeft3').addEventListener('click', () => cube3Manager.rotateSceneCounterClockwise());
     
     // Cube 4 Controls
-    document.getElementById('left4').addEventListener('click', () => {
-      rotationY4 -= 90;
-      updateCubeRotation(cube4, rotationX4, rotationY4);
-    });
-    document.getElementById('right4').addEventListener('click', () => {
-      rotationY4 += 90;
-      updateCubeRotation(cube4, rotationX4, rotationY4);
-    });
-    document.getElementById('up4').addEventListener('click', () => {
-      rotationX4 -= 90;
-      updateCubeRotation(cube4, rotationX4, rotationY4);
-    });
-    document.getElementById('down4').addEventListener('click', () => {
-      rotationX4 += 90;
-      updateCubeRotation(cube4, rotationX4, rotationY4);
-    });
-    document.getElementById('topRight4').addEventListener('click', () => {
-      sceneRotation4 += 45;
-      updateSceneTransform(scene4, offsetX4, offsetY4, sceneRotation4);
-    });
-    document.getElementById('topLeft4').addEventListener('click', () => {
-      sceneRotation4 -= 45;
-      updateSceneTransform(scene4, offsetX4, offsetY4, sceneRotation4);
-    });
+    document.getElementById('left4').addEventListener('click', () => cube4Manager.rotateLeft());
+    document.getElementById('right4').addEventListener('click', () => cube4Manager.rotateRight());
+    document.getElementById('up4').addEventListener('click', () => cube4Manager.rotateUp());
+    document.getElementById('down4').addEventListener('click', () => cube4Manager.rotateDown());
+    document.getElementById('topRight4').addEventListener('click', () => cube4Manager.rotateSceneClockwise());
+    document.getElementById('topLeft4').addEventListener('click', () => cube4Manager.rotateSceneCounterClockwise());
     
     // Cube 5 Controls
-    document.getElementById('left5').addEventListener('click', () => {
-      rotationY5 -= 90;
-      updateCubeRotation(cube5, rotationX5, rotationY5);
-    });
-    document.getElementById('right5').addEventListener('click', () => {
-      rotationY5 += 90;
-      updateCubeRotation(cube5, rotationX5, rotationY5);
-    });
-    document.getElementById('up5').addEventListener('click', () => {
-      rotationX5 -= 90;
-      updateCubeRotation(cube5, rotationX5, rotationY5);
-    });
-    document.getElementById('down5').addEventListener('click', () => {
-      rotationX5 += 90;
-      updateCubeRotation(cube5, rotationX5, rotationY5);
-    });
-    document.getElementById('topRight5').addEventListener('click', () => {
-      sceneRotation5 += 45;
-      updateSceneTransform(scene5, offsetX5, offsetY5, sceneRotation5);
-    });
-    document.getElementById('topLeft5').addEventListener('click', () => {
-      sceneRotation5 -= 45;
-      updateSceneTransform(scene5, offsetX5, offsetY5, sceneRotation5);
-    });
+    document.getElementById('left5').addEventListener('click', () => cube5Manager.rotateLeft());
+    document.getElementById('right5').addEventListener('click', () => cube5Manager.rotateRight());
+    document.getElementById('up5').addEventListener('click', () => cube5Manager.rotateUp());
+    document.getElementById('down5').addEventListener('click', () => cube5Manager.rotateDown());
+    document.getElementById('topRight5').addEventListener('click', () => cube5Manager.rotateSceneClockwise());
+    document.getElementById('topLeft5').addEventListener('click', () => cube5Manager.rotateSceneCounterClockwise());
     
     // Cube 6 Controls
-    document.getElementById('left6').addEventListener('click', () => {
-      rotationY6 -= 90;
-      updateCubeRotation(cube6, rotationX6, rotationY6);
-    });
-    document.getElementById('right6').addEventListener('click', () => {
-      rotationY6 += 90;
-      updateCubeRotation(cube6, rotationX6, rotationY6);
-    });
-    document.getElementById('up6').addEventListener('click', () => {
-      rotationX6 -= 90;
-      updateCubeRotation(cube6, rotationX6, rotationY6);
-    });
-    document.getElementById('down6').addEventListener('click', () => {
-      rotationX6 += 90;
-      updateCubeRotation(cube6, rotationX6, rotationY6);
-    });
-    document.getElementById('topRight6').addEventListener('click', () => {
-      sceneRotation6 += 45;
-      updateSceneTransform(scene6, offsetX6, offsetY6, sceneRotation6);
-    });
-    document.getElementById('topLeft6').addEventListener('click', () => {
-      sceneRotation6 -= 45;
-      updateSceneTransform(scene6, offsetX6, offsetY6, sceneRotation6);
-    });
+    document.getElementById('left6').addEventListener('click', () => cube6Manager.rotateLeft());
+    document.getElementById('right6').addEventListener('click', () => cube6Manager.rotateRight());
+    document.getElementById('up6').addEventListener('click', () => cube6Manager.rotateUp());
+    document.getElementById('down6').addEventListener('click', () => cube6Manager.rotateDown());
+    document.getElementById('topRight6').addEventListener('click', () => cube6Manager.rotateSceneClockwise());
+    document.getElementById('topLeft6').addEventListener('click', () => cube6Manager.rotateSceneCounterClockwise());
     
     // Cube 7 Controls
-    document.getElementById('left7').addEventListener('click', () => {
-      rotationY7 -= 90;
-      updateCubeRotation(cube7, rotationX7, rotationY7);
-    });
-    document.getElementById('right7').addEventListener('click', () => {
-      rotationY7 += 90;
-      updateCubeRotation(cube7, rotationX7, rotationY7);
-    });
-    document.getElementById('up7').addEventListener('click', () => {
-      rotationX7 -= 90;
-      updateCubeRotation(cube7, rotationX7, rotationY7);
-    });
-    document.getElementById('down7').addEventListener('click', () => {
-      rotationX7 += 90;
-      updateCubeRotation(cube7, rotationX7, rotationY7);
-    });
-    document.getElementById('topRight7').addEventListener('click', () => {
-      sceneRotation7 += 45;
-      updateSceneTransform(scene7, offsetX7, offsetY7, sceneRotation7);
-    });
-    document.getElementById('topLeft7').addEventListener('click', () => {
-      sceneRotation7 -= 45;
-      updateSceneTransform(scene7, offsetX7, offsetY7, sceneRotation7);
-    });
+    document.getElementById('left7').addEventListener('click', () => cube7Manager.rotateLeft());
+    document.getElementById('right7').addEventListener('click', () => cube7Manager.rotateRight());
+    document.getElementById('up7').addEventListener('click', () => cube7Manager.rotateUp());
+    document.getElementById('down7').addEventListener('click', () => cube7Manager.rotateDown());
+    document.getElementById('topRight7').addEventListener('click', () => cube7Manager.rotateSceneClockwise());
+    document.getElementById('topLeft7').addEventListener('click', () => cube7Manager.rotateSceneCounterClockwise());
     
     // Cube 8 Controls
-    document.getElementById('left8').addEventListener('click', () => {
-      rotationY8 -= 90;
-      updateCubeRotation(cube8, rotationX8, rotationY8);
-    });
-    document.getElementById('right8').addEventListener('click', () => {
-      rotationY8 += 90;
-      updateCubeRotation(cube8, rotationX8, rotationY8);
-    });
-    document.getElementById('up8').addEventListener('click', () => {
-      rotationX8 -= 90;
-      updateCubeRotation(cube8, rotationX8, rotationY8);
-    });
-    document.getElementById('down8').addEventListener('click', () => {
-      rotationX8 += 90;
-      updateCubeRotation(cube8, rotationX8, rotationY8);
-    });
-    document.getElementById('topRight8').addEventListener('click', () => {
-      sceneRotation8 += 45;
-      updateSceneTransform(scene8, offsetX8, offsetY8, sceneRotation8);
-    });
-    document.getElementById('topLeft8').addEventListener('click', () => {
-      sceneRotation8 -= 45;
-      updateSceneTransform(scene8, offsetX8, offsetY8, sceneRotation8);
-    });
+    document.getElementById('left8').addEventListener('click', () => cube8Manager.rotateLeft());
+    document.getElementById('right8').addEventListener('click', () => cube8Manager.rotateRight());
+    document.getElementById('up8').addEventListener('click', () => cube8Manager.rotateUp());
+    document.getElementById('down8').addEventListener('click', () => cube8Manager.rotateDown());
+    document.getElementById('topRight8').addEventListener('click', () => cube8Manager.rotateSceneClockwise());
+    document.getElementById('topLeft8').addEventListener('click', () => cube8Manager.rotateSceneCounterClockwise());
     
     // Cube 9 Controls
-    document.getElementById('left9').addEventListener('click', () => {
-      rotationY9 -= 90;
-      updateCubeRotation(cube9, rotationX9, rotationY9);
-    });
-    document.getElementById('right9').addEventListener('click', () => {
-      rotationY9 += 90;
-      updateCubeRotation(cube9, rotationX9, rotationY9);
-    });
-    document.getElementById('up9').addEventListener('click', () => {
-      rotationX9 -= 90;
-      updateCubeRotation(cube9, rotationX9, rotationY9);
-    });
-    document.getElementById('down9').addEventListener('click', () => {
-      rotationX9 += 90;
-      updateCubeRotation(cube9, rotationX9, rotationY9);
-    });
-    document.getElementById('topRight9').addEventListener('click', () => {
-      sceneRotation9 += 45;
-      updateSceneTransform(scene9, offsetX9, offsetY9, sceneRotation9);
-    });
-    document.getElementById('topLeft9').addEventListener('click', () => {
-      sceneRotation9 -= 45;
-      updateSceneTransform(scene9, offsetX9, offsetY9, sceneRotation9);
-    });
-    
-    // Randomize initial visible face for each cube
-    function randomizeCubeVisibleFace(cube) {
-      const faces = ['front', 'back', 'left', 'right', 'top', 'bottom'];
-      const randomFace = faces[Math.floor(Math.random() * faces.length)];
-      switch(randomFace) {
-        case 'front':
-          cube.style.transform = "rotateX(0deg) rotateY(0deg)";
-          break;
-        case 'back':
-          cube.style.transform = "rotateX(0deg) rotateY(180deg)";
-          break;
-        case 'left':
-          cube.style.transform = "rotateX(0deg) rotateY(-90deg)";
-          break;
-        case 'right':
-          cube.style.transform = "rotateX(0deg) rotateY(90deg)";
-          break;
-        case 'top':
-          cube.style.transform = "rotateX(90deg) rotateY(0deg)";
-          break;
-        case 'bottom':
-          cube.style.transform = "rotateX(-90deg) rotateY(0deg)";
-          break;
-      }
-    }
-    
-    document.querySelectorAll('.cube').forEach(cube => {
-      randomizeCubeVisibleFace(cube);
-    });
+    document.getElementById('left9').addEventListener('click', () => cube9Manager.rotateLeft());
+    document.getElementById('right9').addEventListener('click', () => cube9Manager.rotateRight());
+    document.getElementById('up9').addEventListener('click', () => cube9Manager.rotateUp());
+    document.getElementById('down9').addEventListener('click', () => cube9Manager.rotateDown());
+    document.getElementById('topRight9').addEventListener('click', () => cube9Manager.rotateSceneClockwise());
+    document.getElementById('topLeft9').addEventListener('click', () => cube9Manager.rotateSceneCounterClockwise());
   </script>
 </body>
 </html>
