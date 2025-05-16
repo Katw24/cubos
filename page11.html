@@ -38,12 +38,13 @@
       transition: transform 0.1s;
     }
     .cube div {
-      position: absolute;
-      width: 100px;
-      height: 100px;
-      background-size: cover;
-      background-position: center;
-    }
+  position: absolute;
+  width: 100px;
+  height: 100px;
+  background-size: cover;
+  background-position: center;
+  backface-visibility: hidden; /* 👈 ESSENCIAL */
+}
     .front  { transform: translateZ(50px); background-image: url('./ladoscubo/tdbra.png'); }
     .back   { transform: rotateY(180deg) translateZ(50px); background-image: url('./ladoscubo/tdverm.png'); }
     .left   { transform: rotateY(-90deg) translateZ(50px); background-image: url('./ladoscubo/mm.png'); }
@@ -141,16 +142,16 @@
 </head>
 <body>
   <!-- Magnetic Points - positioned away from original cube positions -->
-  <div class="magnetic-point" style="left: 650px; top: 250px;"></div>
-  <div class="magnetic-point" style="left: 765px; top: 250px;"></div>
-  <div class="magnetic-point" style="left: 881px; top: 250px;"></div>
-  <div class="magnetic-point" style="left: 650px; top: 365px;"></div>
-  <div class="magnetic-point" style="left: 765px; top: 365px;"></div>
-  <div class="magnetic-point" style="left: 881px; top: 365px;"></div>
-  <div class="magnetic-point" style="left: 650px; top: 480px;"></div>
-  <div class="magnetic-point" style="left: 765px; top: 480px;"></div>
-  <div class="magnetic-point" style="left: 881px; top: 480px;"></div>
-
+  <div class="magnetic-point" style="left: 649px; top: 250px;"></div>
+  <div class="magnetic-point" style="left: 763px; top: 250px;"></div>
+  <div class="magnetic-point" style="left: 877px; top: 250px;"></div>
+  <div class="magnetic-point" style="left: 649px; top: 364px;"></div>
+  <div class="magnetic-point" style="left: 763px; top: 364px;"></div>
+  <div class="magnetic-point" style="left: 877px; top: 364px;"></div>
+  <div class="magnetic-point" style="left: 649px; top: 478px;"></div>
+  <div class="magnetic-point" style="left: 763px; top: 478px;"></div>
+  <div class="magnetic-point" style="left: 877px; top: 478px;"></div>
+  
   <!-- Nine Scenes (each containing one cube and its controls) -->
   <div class="scene" id="scene1">
     <div class="cube" id="cube1">

@@ -36,12 +36,13 @@
     }
 
     .cube div {
-      position: absolute;
-      width: 100px;
-      height: 100px;
-      background-size: cover;
-      background-position: center;
-    }
+  position: absolute;
+  width: 100px;
+  height: 100px;
+  background-size: cover;
+  background-position: center;
+  backface-visibility: hidden; /* 👈 ESSENCIAL */
+}
 
     .front  { transform: translateZ(50px); background-image: url('./ladoscubo/tdbra.png'); }
     .back   { transform: rotateY(180deg) translateZ(50px); background-image: url('./ladoscubo/tdverm.png'); }
@@ -145,9 +146,9 @@
 <body>
   <!-- Magnetic Points - positioned away from original cube positions -->
   <div class="magnetic-point" style="left: 650px; top: 280px;"></div>
-  <div class="magnetic-point" style="left: 766px; top: 280px;"></div>
-  <div class="magnetic-point" style="left: 650px; top: 395px;"></div>
-  <div class="magnetic-point" style="left: 766px; top: 395px;"></div>
+  <div class="magnetic-point" style="left: 764px; top: 280px;"></div>
+  <div class="magnetic-point" style="left: 650px; top: 394px;"></div>
+  <div class="magnetic-point" style="left: 764px; top: 395px;"></div>
 
   <!-- Cube 1 -->
   <div class="scene" id="scene1">
@@ -475,6 +476,10 @@
     document.getElementById('down4').addEventListener('click', () => cube4Manager.rotateDown());
     document.getElementById('topRight4').addEventListener('click', () => cube4Manager.rotateSceneClockwise());
     document.getElementById('topLeft4').addEventListener('click', () => cube4Manager.rotateSceneCounterClockwise());
+
+    document.querySelectorAll('.scene').forEach(scene => {
+  console.log(scene.id, scene.offsetWidth, scene.offsetHeight);
+});
   </script>
 </body>
 </html>

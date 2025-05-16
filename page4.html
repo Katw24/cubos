@@ -27,13 +27,14 @@
     #scene3 { left: 50px; top: 350px; }
     #scene4 { left: 50px; top: 500px; }
 
-    .cube {
-      width: 100%;
-      height: 100%;
-      position: relative;
-      transform-style: preserve-3d;
-      transition: transform 0.1s;
-    }
+    .cube div {
+  position: absolute;
+  width: 100px;
+  height: 100px;
+  background-size: cover;
+  background-position: center;
+  backface-visibility: hidden; /* 👈 ESSENCIAL */
+}
 
     .cube div {
       position: absolute;
@@ -145,9 +146,9 @@
 <body>
   <!-- Magnetic Points - positioned away from original cube positions -->
   <div class="magnetic-point" style="left: 650px; top: 280px;"></div>
-  <div class="magnetic-point" style="left: 766px; top: 280px;"></div>
-  <div class="magnetic-point" style="left: 650px; top: 395px;"></div>
-  <div class="magnetic-point" style="left: 766px; top: 395px;"></div>
+  <div class="magnetic-point" style="left: 764px; top: 280px;"></div>
+  <div class="magnetic-point" style="left: 650px; top: 394px;"></div>
+  <div class="magnetic-point" style="left: 764px; top: 395px;"></div>
 
   <!-- Cube 1 -->
   <div class="scene" id="scene1">

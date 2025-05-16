@@ -38,12 +38,13 @@
       transition: transform 0.1s;
     }
     .cube div {
-      position: absolute;
-      width: 100px;
-      height: 100px;
-      background-size: cover;
-      background-position: center;
-    }
+  position: absolute;
+  width: 100px;
+  height: 100px;
+  background-size: cover;
+  background-position: center;
+  backface-visibility: hidden; /* 👈 ESSENCIAL */
+}
     .front  { transform: translateZ(50px); background-image: url('./ladoscubo/tdbra.png'); }
     .back   { transform: rotateY(180deg) translateZ(50px); background-image: url('./ladoscubo/tdverm.png'); }
     .left   { transform: rotateY(-90deg) translateZ(50px); background-image: url('./ladoscubo/mm.png'); }
