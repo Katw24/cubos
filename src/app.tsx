@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 
-function App() {
+export default function App() {
   const [hoveredButton, setHoveredButton] = useState(false);
 
   const handlePlayClick = () => {
@@ -363,5 +363,3 @@ function TargetCube() {
     </svg>
   );
 }
-
-export default App;
