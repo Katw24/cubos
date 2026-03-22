@@ -4,9 +4,9 @@ export default function App() {
   return
   const [hoveredButton, setHoveredButton] = useState(false);
 
-  const handlePlayClick = () => {
-    window.location.href = "https://katw24.github.io/cubos/exemplo.html";
-  };
+const handlePlayClick = () => {
+  alert("clicou");
+};
 
   return (
     <main className="min-h-screen bg-black relative overflow-hidden">
