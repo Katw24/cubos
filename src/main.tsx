@@ -1,10 +1,10 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
-import App from './app.tsx'
-import './index.css' // 👈 ESSA LINHA
+
+function Teste() {
+  return <h1 style={{ color: 'red' }}>TESTE RENDER</h1>
+}
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
+  <Teste />
 )
