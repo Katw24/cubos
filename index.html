@@ -1,39 +1,293 @@
 <!DOCTYPE html>
-<html>
+<html lang="pt-br">
 <head>
-<link rel="stylesheet" type="text/css" href="index.css" />
-<title>Teste Cubos</title>
-<imagetitle></imagetitle>
-<style>
-      .title {
-       font-size: 1.5rem;
-        text-align: center;
-        font-family: sans-serif
-      }
-body {
-        background-color: #5F9EA1;
-        background: #efb836
-      }
-      .linkinicio {
-      display: flex; /* Use flexbox for centering */
-       justify-content: center; /* Center horizontally */
-    align-items: center; /* Center vertically */
-      }
-      .linkinicio img {
-       height: auto; /* Maintain aspect ratio */
-        display: block;
-}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CubeStack - Junte os cubos e forme a imagem</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background-color: #000;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-family: system-ui, -apple-system, sans-serif;
+      overflow: hidden;
+    }
+
+    /* Grid de fundo */
+    .grid-bg {
+      position: absolute;
+      inset: 0;
+      opacity: 0.1;
+      background-image: 
+        linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+      background-size: 50px 50px;
+    }
+
+    /* Título */
+    h1 {
+      color: #fff;
+      font-size: 4rem;
+      font-weight: 300;
+      letter-spacing: -0.02em;
+      margin-bottom: 8px;
+      text-align: center;
+    }
+
+    h1 span {
+      font-weight: 700;
+    }
+
+    .subtitle {
+      color: rgba(255,255,255,0.5);
+      font-size: 1.25rem;
+      margin-bottom: 60px;
+      text-align: center;
+    }
+
+    /* Botão 3D */
+    .btn-container {
+      position: relative;
+      margin-bottom: 60px;
+    }
+
+    .btn {
+      position: relative;
+      padding: 24px 64px;
+      font-size: 1.5rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      background: #fff;
+      color: #000;
+      border: none;
+      border-radius: 16px;
+      cursor: pointer;
+      box-shadow: 
+        0 15px 35px -5px rgba(255,255,255,0.15),
+        0 0 0 1px rgba(255,255,255,0.05);
+      transition: all 0.2s;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 
+        0 25px 50px -12px rgba(255,255,255,0.25),
+        0 0 0 1px rgba(255,255,255,0.1);
+    }
+
+    .btn:active {
+      transform: translateY(0);
+    }
+
+    .btn::after {
+      content: '';
+      position: absolute;
+      bottom: -8px;
+      left: 8px;
+      right: 8px;
+      height: 100%;
+      background: rgba(255,255,255,0.2);
+      border-radius: 16px;
+      z-index: -1;
+    }
+
+    /* Regras */
+    .rules {
+      display: flex;
+      gap: 60px;
+      max-width: 800px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .rule {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      max-width: 180px;
+    }
+
+    .rule-icon {
+      width: 80px;
+      height: 80px;
+      margin-bottom: 16px;
+    }
+
+    .rule h3 {
+      color: #fff;
+      font-size: 1.125rem;
+      font-weight: 500;
+      margin-bottom: 8px;
+    }
+
+    .rule p {
+      color: rgba(255,255,255,0.4);
+      font-size: 0.875rem;
+      line-height: 1.5;
+    }
+
+    /* Setas de rotação */
+    .rotate-arrows {
+      position: relative;
+      width: 60px;
+      height: 60px;
+      margin: 0 auto;
+    }
+
+    .rotate-arrows::before {
+      content: '↑';
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      color: #fff;
+      font-size: 1.5rem;
+    }
+
+    .rotate-arrows::after {
+      content: '↻';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      color: rgba(255,255,255,0.3);
+      font-size: 2.5rem;
+    }
+
+    /* Cubo com clique */
+    .click-cube {
+      position: relative;
+      width: 60px;
+      height: 60px;
+      margin: 0 auto;
+      border: 2px solid #fff;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .click-cube::before {
+      content: '👆';
+      font-size: 1.5rem;
+    }
+
+    /* Alvo/padrão */
+    .target-pattern {
+      display: grid;
+      grid-template-columns: repeat(3, 12px);
+      gap: 2px;
+      margin: 0 auto;
+    }
+
+    .target-pattern .pixel {
+      width: 12px;
+      height: 12px;
+      background: #fff;
+      border-radius: 2px;
+    }
+
+    .target-pattern .pixel.empty {
+      background: transparent;
+    }
+
+    .target-pattern .pixel:nth-child(2),
+    .target-pattern .pixel:nth-child(4),
+    .target-pattern .pixel:nth-child(5),
+    .target-pattern .pixel:nth-child(6),
+    .target-pattern .pixel:nth-child(8) {
+      background: #fff;
+    }
+
+    /* Legenda do teclado */
+    .keyboard-hint {
+      color: rgba(255,255,255,0.3);
+      font-size: 0.875rem;
+      margin-top: 40px;
+    }
+  </style>
 </head>
 <body>
-    <h1 class="title">Teste Cubos</h1>
-<div class="linkContainer.inicio">
-<a class="linkinicio" href="./exemplo.html">
-<img
-src="./outros/botaoinicial.png"
-alt="próximo.inicio"
-width="30%"
-/>
-</a>
-</div>
+  <div class="grid-bg"></div>
+
+  <h1>CUBE<span>STACK</span></h1>
+  <p class="subtitle">Junte os cubos e forme a imagem</p>
+
+  <div class="btn-container">
+    <a href="https://katw24.github.io/cubos/exemplo.html" class="btn">JOGAR</a>
+  </div>
+
+  <div class="rules">
+    <!-- Rotacionar -->
+    <div class="rule">
+      <svg class="rule-icon" viewBox="0 0 60 60">
+        <!-- Círculo central -->
+        <circle cx="30" cy="30" r="12" fill="none" stroke="white" stroke-width="1.5" opacity="0.3"/>
+        <!-- Setas nas 8 direções -->
+        <path d="M30 8 L30 16" stroke="white" stroke-width="2" stroke-linecap="round"/>
+        <path d="M27 11 L30 8 L33 11" fill="none" stroke="white" stroke-width="2" stroke-linecap="round"/>
+        
+        <path d="M30 52 L30 44" stroke="white" stroke-width="2" stroke-linecap="round"/>
+        <path d="M27 49 L30 52 L33 49" fill="none" stroke="white" stroke-width="2" stroke-linecap="round"/>
+        
+        <path d="M8 30 L16 30" stroke="white" stroke-width="2" stroke-linecap="round"/>
+        <path d="M11 27 L8 30 L11 33" fill="none" stroke="white" stroke-width="2" stroke-linecap="round"/>
+        
+        <path d="M52 30 L44 30" stroke="white" stroke-width="2" stroke-linecap="round"/>
+        <path d="M49 27 L52 30 L49 33" fill="none" stroke="white" stroke-width="2" stroke-linecap="round"/>
+        
+        <!-- Diagonais -->
+        <path d="M15 15 L21 21" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+        <path d="M45 15 L39 21" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+        <path d="M15 45 L21 39" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+        <path d="M45 45 L39 39" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>
+      <h3>Rotacionar</h3>
+      <p>Use os botões ao redor do cubo — inclui diagonais</p>
+    </div>
+
+    <!-- Ativar -->
+    <div class="rule">
+      <svg class="rule-icon" viewBox="0 0 60 60">
+        <!-- Cubo isométrico -->
+        <path d="M30 10 L50 20 L50 45 L30 55 L10 45 L10 20 Z" fill="none" stroke="white" stroke-width="1.5"/>
+        <path d="M30 10 L30 32 L10 20" fill="none" stroke="white" stroke-width="1.5"/>
+        <path d="M30 32 L50 20 L50 45 L30 55" fill="none" stroke="white" stroke-width="1.5"/>
+        <!-- Indicador de clique -->
+        <circle cx="30" cy="32" r="6" fill="none" stroke="white" stroke-width="1.5" opacity="0.7"/>
+      </svg>
+      <h3>Ativar</h3>
+      <p>Clique nos cubos para ligá-los e criar conexões</p>
+    </div>
+
+    <!-- Formar -->
+    <div class="rule">
+      <svg class="rule-icon" viewBox="0 0 60 60">
+        <!-- Cubo isométrico -->
+        <path d="M30 10 L50 20 L50 45 L30 55 L10 45 L10 20 Z" fill="none" stroke="white" stroke-width="1.5"/>
+        <path d="M30 10 L30 32 L10 20" fill="none" stroke="white" stroke-width="1.5"/>
+        <path d="M30 32 L50 20 L50 45 L30 55" fill="none" stroke="white" stroke-width="1.5"/>
+        <!-- Coração pixel -->
+        <rect x="22" y="28" width="4" height="4" fill="white" opacity="0.8"/>
+        <rect x="28" y="28" width="4" height="4" fill="white" opacity="0.8"/>
+        <rect x="34" y="28" width="4" height="4" fill="white" opacity="0.8"/>
+        <rect x="28" y="34" width="4" height="4" fill="white" opacity="0.8"/>
+      </svg>
+      <h3>Formar</h3>
+      <p>Recrie o padrão pixel art mostrado na tela</p>
+    </div>
+  </div>
+
+  <p class="keyboard-hint">Teclas: W/↑ A/← S/↓ D/→ | Diagonais: Q E Z C</p>
 </body>
+</html>
