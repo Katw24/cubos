@@ -363,5 +363,5 @@ function TargetCube() {
     </svg>
   );
 }
- 
+
 export default App;
