@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { motion } from "framer-motion";
 
 export default function App() {
+  return
   const [hoveredButton, setHoveredButton] = useState(false);
 
   const handlePlayClick = () => {
@@ -22,62 +22,11 @@ export default function App() {
         }}
       />
 
-      {/* Formas geométricas flutuantes ao fundo */}
-      <motion.div
-        className="absolute top-20 left-20 w-32 h-32 opacity-20"
-        animate={{ 
-          y: [0, -20, 0],
-          rotate: [0, 5, 0]
-        }}
-        transition={{ 
-          duration: 6, 
-          repeat: Infinity,
-          ease: "easeInOut"
-        }}
-      >
-        <CubeIcon />
-      </motion.div>
-      
-      <motion.div
-        className="absolute top-40 right-32 w-24 h-24 opacity-15"
-        animate={{ 
-          y: [0, 15, 0],
-          rotate: [0, -8, 0]
-        }}
-        transition={{ 
-          duration: 5, 
-          repeat: Infinity,
-          ease: "easeInOut",
-          delay: 0.5
-        }}
-      >
-        <CubeIcon />
-      </motion.div>
-      
-      <motion.div
-        className="absolute bottom-32 left-1/4 w-20 h-20 opacity-10"
-        animate={{ 
-          y: [0, -25, 0],
-          rotate: [0, 10, 0]
-        }}
-        transition={{ 
-          duration: 7, 
-          repeat: Infinity,
-          ease: "easeInOut",
-          delay: 1
-        }}
-      >
-        <CubeIcon />
-      </motion.div>
-
       {/* Conteúdo principal */}
       <div className="relative z-10 min-h-screen flex flex-col items-center justify-center px-6">
         
         {/* Título */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, ease: "easeOut" }}
+        <div
           className="text-center mb-16"
         >
           <h1 className="text-white text-5xl sm:text-6xl lg:text-7xl font-light tracking-tight mb-4">
@@ -86,22 +35,18 @@ export default function App() {
           <p className="text-white/50 text-lg sm:text-xl font-light">
             Junte os cubos e forme a imagem
           </p>
-        </motion.div>
+        </div>
 
         {/* Botão 3D Principal */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.6, delay: 0.3 }}
+        <div
           className="relative mb-20"
         >
-          <motion.button
+          <button
             onClick={handlePlayClick}
             onMouseEnter={() => setHoveredButton(true)}
             onMouseLeave={() => setHoveredButton(false)}
             className="relative group"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.98 }}
+
           >
             {/* Camada de trás - efeito 3D */}
             <div 
@@ -145,17 +90,14 @@ export default function App() {
                 </span>
               </div>
             </div>
-          </motion.button>
-        </motion.div>
+          </button>
+        </div>
 
         {/* Ilustrações das regras ao redor */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 max-w-4xl mx-auto">
           
           {/* Regra 1 - Rotacionar com botões */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.6 }}
+          <div
             className="flex flex-col items-center text-center"
           >
             <div className="w-24 h-24 mb-4 relative">
@@ -165,13 +107,10 @@ export default function App() {
             <p className="text-white/40 text-sm max-w-[150px]">
               Use os botões ao redor do cubo — inclui diagonais ↖↗↙↘
             </p>
-          </motion.div>
+          </div>
 
           {/* Regra 2 - Ativar Cubos */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.8 }}
+          <div
             className="flex flex-col items-center text-center"
           >
             <div className="w-24 h-24 mb-4 relative">
@@ -181,13 +120,10 @@ export default function App() {
             <p className="text-white/40 text-sm max-w-[150px]">
               Clique nos cubos para ligá-los e criar conexões
             </p>
-          </motion.div>
+          </div>
 
           {/* Regra 3 - Formar Imagem */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 1 }}
+          <div
             className="flex flex-col items-center text-center"
           >
             <div className="w-24 h-24 mb-4 relative">
@@ -197,34 +133,26 @@ export default function App() {
             <p className="text-white/40 text-sm max-w-[150px]">
               Recrie o padrão pixel art mostrado na tela
             </p>
-          </motion.div>
+          </div>
         </div>
 
         {/* Teclas disponíveis */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 1.2 }}
+        <div
           className="mt-8 text-white/30 text-sm"
         >
           <p>Teclas: W/↑ A/← S/↓ D/→  |  Diagonais: Q E Z C</p>
-        </motion.div>
+        </div>
 
         {/* Indicador de rolagem */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 1.5 }}
+        <div
           className="absolute bottom-8 left-1/2 -translate-x-1/2"
         >
-          <motion.div
-            animate={{ y: [0, 8, 0] }}
-            transition={{ duration: 2, repeat: Infinity }}
+          <div
             className="w-6 h-10 border-2 border-white/30 rounded-full flex justify-center pt-2"
           >
             <div className="w-1 h-2 bg-white/50 rounded-full" />
-          </motion.div>
-        </motion.div>
+          </div>
+        </div>
       </div>
     </main>
   );
