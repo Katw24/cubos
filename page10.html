@@ -2,16 +2,37 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Cubos</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>9 Cubos</title>
+
+  <!-- FONTES -->
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+
   <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+    }
+
     body {
       position: relative;
       margin: 0;
-      background-color: lightgrey;
+      background-color: #f4f2ee;
       overflow: hidden;
       height: 100vh;
+      font-family: 'DM Sans', sans-serif;
     }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: radial-gradient(circle, #c8c4bc 1px, transparent 1px);
+      background-size: 28px 28px;
+      pointer-events: none;
+      opacity: 0.5;
+      z-index: 0;
+    }
+
     .scene {
       width: 100px;
       height: 100px;
@@ -19,16 +40,19 @@
       position: absolute;
       cursor: grab;
       transform-origin: center;
+      z-index: 10;
     }
-#scene1 { left: 25px; top: 150px; }
-#scene2 { left: 25px; top: calc(50% - 50px); }
-#scene3 { left: 25px; bottom: 150px; }
-#scene4 { left: 200px; top: 25px; }
-#scene5 { left: 350px; top: 25px; }
-#scene6 { left: 500px; top: 25px; }
-#scene7 { left: 200px; bottom: 25px; }
-#scene8 { left: 350px; bottom: 25px; }
-#scene9 { left: 500px; bottom: 25px; }
+
+    /* POSIÇÕES ORIGINAIS (mantidas) */
+    #scene1 { left: 25px; top: 150px; }
+    #scene2 { left: 25px; top: calc(50% - 50px); }
+    #scene3 { left: 25px; bottom: 150px; }
+    #scene4 { left: 200px; top: 25px; }
+    #scene5 { left: 350px; top: 25px; }
+    #scene6 { left: 500px; top: 25px; }
+    #scene7 { left: 200px; bottom: 25px; }
+    #scene8 { left: 350px; bottom: 25px; }
+    #scene9 { left: 500px; bottom: 25px; }
 
     .cube {
       width: 100%;
@@ -37,14 +61,16 @@
       transform-style: preserve-3d;
       transition: transform 0.1s;
     }
+
     .cube div {
-  position: absolute;
-  width: 100px;
-  height: 100px;
-  background-size: cover;
-  background-position: center;
-  backface-visibility: hidden; /* 👈 ESSENCIAL */
-}
+      position: absolute;
+      width: 100px;
+      height: 100px;
+      background-size: cover;
+      background-position: center;
+      backface-visibility: hidden;
+    }
+
     .front  { transform: translateZ(50px); background-image: url('./ladoscubo/tdbra.png'); }
     .back   { transform: rotateY(180deg) translateZ(50px); background-image: url('./ladoscubo/tdverm.png'); }
     .left   { transform: rotateY(-90deg) translateZ(50px); background-image: url('./ladoscubo/mm.png'); }
@@ -52,6 +78,7 @@
     .top    { transform: rotateX(90deg) translateZ(50px); background-image: url('./ladoscubo/tdbra.png'); }
     .bottom { transform: rotateX(-90deg) translateZ(50px); background-image: url('./ladoscubo/tdverm.png'); }
 
+    /* CONTROLES BONITOS */
     .controls {
       position: absolute;
       top: 0;
@@ -61,98 +88,117 @@
       z-index: 100;
       pointer-events: none;
       opacity: 0;
-      transition: opacity 0.2s ease-in-out;
+      transition: opacity 0.18s ease;
     }
+
     .scene:hover .controls {
       opacity: 1;
       pointer-events: all;
     }
+
     .arrow {
-      font-size: 16px;
-      font-weight: bold;
-      width: 25px;
-      height: 25px;
-      background: none;
-      border: none;
+      width: 26px;
+      height: 26px;
+      background: rgba(255, 255, 255, 0.88);
+      border: 1px solid rgba(0, 0, 0, 0.1);
+      border-radius: 6px;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
       position: absolute;
-      z-index: 100;
+      font-size: 11px;
+      color: #444;
+      backdrop-filter: blur(4px);
+      box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+      transition: background 0.12s, transform 0.08s, box-shadow 0.12s;
     }
-    /* Control buttons positions */
-    .controls button[id^="up"]   { top: -10px; left: 50%; transform: translateX(-50%); }
-    .controls button[id^="down"] { bottom: -10px; left: 50%; transform: translateX(-50%); }
-    .controls button[id^="left"] { left: -10px; top: 50%; transform: translateY(-50%); }
-    .controls button[id^="right"] { right: -10px; top: 50%; transform: translateY(-50%); }
-    .controls button[id^="topRight"] { top: -10px; right: -10px; }
-    .controls button[id^="topLeft"]  { top: -10px; left: -10px; }
 
-    /* Image box (upper-right) */
+    .arrow:hover {
+      background: #ffffff;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.13);
+    }
+
+    .arrow:active {
+      transform: scale(0.92);
+      background: #f0ede8;
+    }
+
+    .controls button[id^="up"]      { top: -14px; left: 50%; transform: translateX(-50%); }
+    .controls button[id^="down"]    { bottom: -14px; left: 50%; transform: translateX(-50%); }
+    .controls button[id^="left"]    { left: -14px; top: 50%; transform: translateY(-50%); }
+    .controls button[id^="right"]   { right: -14px; top: 50%; transform: translateY(-50%); }
+    .controls button[id^="topRight"]{ top: -14px; right: -14px; }
+    .controls button[id^="topLeft"] { top: -14px; left: -14px; }
+
+    /* IMAGE BOX */
     .image-box {
       position: fixed;
-      top: 20px;
-      right: 20px;
-      width: 200px;
-      height: 200px;
-      background-color: white;
-      border: 2px solid grey;
-      box-shadow: 0px 0px 10px rgba(0,0,0,0.5);
+      top: 24px;
+      right: 24px;
+      width: 192px;
+      height: 192px;
+      background: #fff;
+      border: 1px solid rgba(0,0,0,0.09);
+      border-radius: 12px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.07);
       overflow: hidden;
     }
+
     .image-box img {
       width: 100%;
       height: 100%;
       object-fit: cover;
     }
-    /* Next page link container */
+
+    /* LINKS */
     .linkContainer {
       position: fixed;
-      right: 10px;
+      right: 24px;
       top: 50%;
       transform: translateY(-50%);
-      padding: 0;
-      text-align: right;
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      gap: 8px;
     }
+
     .linkContainer .link {
-      display: inline-block; /* Ensures anchor wraps only around the image */
-      padding: 0;
-      margin: 0;
-      border: none;
+      width: 36px;
+      height: 36px;
+      background: rgba(255,255,255,0.85);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
-    .linkContainer .link img {
-      display: block; /* Removes extra inline spacing */
-      width: 50px; /* Adjust to match the correct size */
-      height: auto; /* Maintain aspect ratio */
+
+    .linkContainer img {
+      width: 18px;
     }
-    
-    /* Magnetic points styling */
+
     .magnetic-point {
       width: 20px;
       height: 20px;
-      background-color: invisible;      border-radius: 50%;
       position: absolute;
       pointer-events: none;
     }
   </style>
 </head>
-<body>
-  <!-- Magnetic Points - positioned away from original cube positions -->
-  <div class="magnetic-point" style="left: 649px; top: 250px;"></div>
-  <div class="magnetic-point" style="left: 763px; top: 250px;"></div>
-  <div class="magnetic-point" style="left: 877px; top: 250px;"></div>
-  <div class="magnetic-point" style="left: 649px; top: 364px;"></div>
-  <div class="magnetic-point" style="left: 763px; top: 364px;"></div>
-  <div class="magnetic-point" style="left: 877px; top: 364px;"></div>
-  <div class="magnetic-point" style="left: 649px; top: 478px;"></div>
-  <div class="magnetic-point" style="left: 763px; top: 478px;"></div>
-  <div class="magnetic-point" style="left: 877px; top: 478px;"></div>
 
-  <!-- Nine Scenes (each containing one cube and its controls) -->
+<body>
+
+<!-- MAGNETIC POINTS (inalterado) -->
+<div class="magnetic-point" style="left: 649px; top: 250px;"></div>
+<div class="magnetic-point" style="left: 763px; top: 250px;"></div>
+<div class="magnetic-point" style="left: 877px; top: 250px;"></div>
+<div class="magnetic-point" style="left: 649px; top: 364px;"></div>
+<div class="magnetic-point" style="left: 763px; top: 364px;"></div>
+<div class="magnetic-point" style="left: 877px; top: 364px;"></div>
+<div class="magnetic-point" style="left: 649px; top: 478px;"></div>
+<div class="magnetic-point" style="left: 763px; top: 478px;"></div>
+<div class="magnetic-point" style="left: 877px; top: 478px;"></div>
+
+<!-- Nine Scenes (each containing one cube and its controls) -->
   <div class="scene" id="scene1">
     <div class="cube" id="cube1">
       <div class="front"></div>
@@ -163,12 +209,12 @@
       <div class="bottom"></div>
     </div>
     <div class="controls" id="controls1">
-      <button class="arrow" id="up1">⬆</button>
-      <button class="arrow" id="down1">⬇</button>
-      <button class="arrow" id="left1">⬅</button>
-      <button class="arrow" id="right1">➡</button>
-      <button class="arrow" id="topRight1">↗</button>
-      <button class="arrow" id="topLeft1">↖</button>
+      <button class="arrow" id="up1">▲</button>
+      <button class="arrow" id="down1">▼</button>
+      <button class="arrow" id="left1">◀</button>
+      <button class="arrow" id="right1">▶</button>
+      <button class="arrow" id="topRight1">↻</button>
+      <button class="arrow" id="topLeft1">↺</button>
     </div>
   </div>
   
@@ -182,12 +228,12 @@
       <div class="bottom"></div>
     </div>
     <div class="controls" id="controls2">
-      <button class="arrow" id="up2">⬆</button>
-      <button class="arrow" id="down2">⬇</button>
-      <button class="arrow" id="left2">⬅</button>
-      <button class="arrow" id="right2">➡</button>
-      <button class="arrow" id="topRight2">↗</button>
-      <button class="arrow" id="topLeft2">↖</button>
+      <button class="arrow" id="up2">▲</button>
+      <button class="arrow" id="down2">▼</button>
+      <button class="arrow" id="left2">◀</button>
+      <button class="arrow" id="right2">▶</button>
+      <button class="arrow" id="topRight2">↻</button>
+      <button class="arrow" id="topLeft2">↺</button>
     </div>
   </div>
   
@@ -201,12 +247,12 @@
       <div class="bottom"></div>
     </div>
     <div class="controls" id="controls3">
-      <button class="arrow" id="up3">⬆</button>
-      <button class="arrow" id="down3">⬇</button>
-      <button class="arrow" id="left3">⬅</button>
-      <button class="arrow" id="right3">➡</button>
-      <button class="arrow" id="topRight3">↗</button>
-      <button class="arrow" id="topLeft3">↖</button>
+      <button class="arrow" id="up3">▲</button>
+      <button class="arrow" id="down3">▼</button>
+      <button class="arrow" id="left3">◀</button>
+      <button class="arrow" id="right3">▶</button>
+      <button class="arrow" id="topRight3">↻</button>
+      <button class="arrow" id="topLeft3">↺</button>
     </div>
   </div>
   
@@ -220,12 +266,12 @@
       <div class="bottom"></div>
     </div>
     <div class="controls" id="controls4">
-      <button class="arrow" id="up4">⬆</button>
-      <button class="arrow" id="down4">⬇</button>
-      <button class="arrow" id="left4">⬅</button>
-      <button class="arrow" id="right4">➡</button>
-      <button class="arrow" id="topRight4">↗</button>
-      <button class="arrow" id="topLeft4">↖</button>
+      <button class="arrow" id="up4">▲</button>
+      <button class="arrow" id="down4">▼</button>
+      <button class="arrow" id="left4">◀</button>
+      <button class="arrow" id="right4">▶</button>
+      <button class="arrow" id="topRight4">↻</button>
+      <button class="arrow" id="topLeft4">↺</button>
     </div>
   </div>
   
@@ -239,12 +285,12 @@
       <div class="bottom"></div>
     </div>
     <div class="controls" id="controls5">
-      <button class="arrow" id="up5">⬆</button>
-      <button class="arrow" id="down5">⬇</button>
-      <button class="arrow" id="left5">⬅</button>
-      <button class="arrow" id="right5">➡</button>
-      <button class="arrow" id="topRight5">↗</button>
-      <button class="arrow" id="topLeft5">↖</button>
+      <button class="arrow" id="up5">▲</button>
+      <button class="arrow" id="down5">▼</button>
+      <button class="arrow" id="left5">◀</button>
+      <button class="arrow" id="right5">▶</button>
+      <button class="arrow" id="topRight5">↻</button>
+      <button class="arrow" id="topLeft5">↺</button>
     </div>
   </div>
   
@@ -258,12 +304,12 @@
       <div class="bottom"></div>
     </div>
     <div class="controls" id="controls6">
-      <button class="arrow" id="up6">⬆</button>
-      <button class="arrow" id="down6">⬇</button>
-      <button class="arrow" id="left6">⬅</button>
-      <button class="arrow" id="right6">➡</button>
-      <button class="arrow" id="topRight6">↗</button>
-      <button class="arrow" id="topLeft6">↖</button>
+      <button class="arrow" id="up6">▲</button>
+      <button class="arrow" id="down6">▼</button>
+      <button class="arrow" id="left6">◀</button>
+      <button class="arrow" id="right6">▶</button>
+      <button class="arrow" id="topRight6">↻</button>
+      <button class="arrow" id="topLeft6">↺</button>
     </div>
   </div>
   
@@ -277,12 +323,12 @@
       <div class="bottom"></div>
     </div>
     <div class="controls" id="controls7">
-      <button class="arrow" id="up7">⬆</button>
-      <button class="arrow" id="down7">⬇</button>
-      <button class="arrow" id="left7">⬅</button>
-      <button class="arrow" id="right7">➡</button>
-      <button class="arrow" id="topRight7">↗</button>
-      <button class="arrow" id="topLeft7">↖</button>
+      <button class="arrow" id="up7">▲</button>
+      <button class="arrow" id="down7">▼</button>
+      <button class="arrow" id="left7">◀</button>
+      <button class="arrow" id="right7">▶</button>
+      <button class="arrow" id="topRight7">↻</button>
+      <button class="arrow" id="topLeft7">↺</button>
     </div>
   </div>
   
@@ -296,12 +342,12 @@
       <div class="bottom"></div>
     </div>
     <div class="controls" id="controls8">
-      <button class="arrow" id="up8">⬆</button>
-      <button class="arrow" id="down8">⬇</button>
-      <button class="arrow" id="left8">⬅</button>
-      <button class="arrow" id="right8">➡</button>
-      <button class="arrow" id="topRight8">↗</button>
-      <button class="arrow" id="topLeft8">↖</button>
+      <button class="arrow" id="up8">▲</button>
+      <button class="arrow" id="down8">▼</button>
+      <button class="arrow" id="left8">◀</button>
+      <button class="arrow" id="right8">▶</button>
+      <button class="arrow" id="topRight8">↻</button>
+      <button class="arrow" id="topLeft8">↺</button>
     </div>
   </div>
   
@@ -315,26 +361,24 @@
       <div class="bottom"></div>
     </div>
     <div class="controls" id="controls9">
-      <button class="arrow" id="up9">⬆</button>
-      <button class="arrow" id="down9">⬇</button>
-      <button class="arrow" id="left9">⬅</button>
-      <button class="arrow" id="right9">➡</button>
-      <button class="arrow" id="topRight9">↗</button>
-      <button class="arrow" id="topLeft9">↖</button>
+      <button class="arrow" id="up9">▲</button>
+      <button class="arrow" id="down9">▼</button>
+      <button class="arrow" id="left9">◀</button>
+      <button class="arrow" id="right9">▶</button>
+      <button class="arrow" id="topRight9">↻</button>
+      <button class="arrow" id="topLeft9">↺</button>
     </div>
   </div>
-  
-  <!-- Image Box (upper-right) -->
-  <div class="image-box">
-    <img src="./exemplos/ex10.png" alt="Sample Image">
-  </div>
-  
-  <!-- Link Container -->
-  <div class="linkContainer">
-    <a class="link" href="./page11.html">
-      <img src="./outros/7604747.png" width="11%" alt="próximo">
-    </a>
-  </div>
+<!-- IMAGE -->
+<div class="image-box">
+  <img src="./exemplos/ex10.png">
+</div>
+
+<div class="linkContainer">
+  <a class="link" href="./page11.html">
+    <img src="./outros/7604747.png">
+  </a>
+</div>
   
   <script>
     // Helper functions
